@@ -384,19 +384,31 @@
 
     const tmpTextArea = document.createElement("textarea");
 
-    function decodeHtmlEntities(str) {
-      if (!str) return "";
-      tmpTextArea.innerHTML = str;
-      let s = tmpTextArea.value;
-      s = s.replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num, 10)));
-      s = s
-        .replace(/&clubs;?/gi, "♣")
-        .replace(/&hearts;?/gi, "♥")
-        .replace(/&diams;?|&diamonds;?/gi, "♦")
-        .replace(/&spades;?/gi, "♠");
-      return s;
-    }
+function decodeHtmlEntities(str) {
+  if (!str) return "";
+  tmpTextArea.innerHTML = str;
+  let s = tmpTextArea.value;
 
+  // Decode numeric entities like &#9827;
+  s = s.replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num, 10)));
+
+  // Decode named HTML entities if any
+  s = s
+    .replace(/&clubs;?/gi, "♣")
+    .replace(/&hearts;?/gi, "♥")
+    .replace(/&diams;?|&diamonds;?/gi, "♦")
+    .replace(/&spades;?/gi, "♠");
+
+  // Decode the shorthand codes that came from your original card:
+  // &c = clubs, &e = diamonds, &f = hearts, &` = spades
+  s = s
+    .replace(/&`/g, "♠")
+    .replace(/&c/g, "♣")
+    .replace(/&e/g, "♦")
+    .replace(/&f/g, "♥");
+
+  return s;
+}
     function getData() {
       const data = {};
       fields.forEach(f => data[f] = decodeHtmlEntities($(f).value.trim()));
