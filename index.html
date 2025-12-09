@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EBU System Card – Page 1 Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px 24px 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    h2 {
+      font-size: 1.1rem;
+      margin-top: 18px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 4px;
+    }
+    h3 {
+      font-size: 1rem;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px 24px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px 16px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      margin-top: 8px;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 0.92rem;
+    }
+    input, textarea {
+      font: inherit;
+      padding: 7px 9px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    .small {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 2px;
+    }
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font: inherit;
+      cursor: pointer;
+      background: #1e88e5;
+      color: white;
+      font-weight: 600;
+      transition: transform 0.05s ease, box-shadow 0.05s ease, opacity 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+    button.secondary {
+      background: #e0e0e0;
+      color: #333;
+      box-shadow: none;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    button:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .status {
+      font-size: 0.85rem;
+      color: #388e3c;
+      min-height: 1.2em;
+    }
+    @media (max-width: 800px) {
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>EBU System Card – Page 1 Builder</h1>
+
+    <!-- HEADER -->
+    <h2>Header</h2>
+    <div class="grid-2">
+      <div class="field">
+        <label for="playerName">Your name</label>
+        <input id="playerName" type="text" value="Espen Gisvold" />
+      </div>
+      <div class="field">
+        <label for="playerNumber">Your EBU number</label>
+        <input id="playerNumber" type="text" value="491316" />
+      </div>
+      <div class="field">
+        <label for="partnerName">Partner's name</label>
+        <input id="partnerName" type="text" value="Svein Erik Dahl" />
+      </div>
+      <div class="field">
+        <label for="partnerNumber">Partner's EBU number</label>
+        <input id="partnerNumber" type="text" value="525143" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="biddingDescription">General description of bidding methods</label>
+      <textarea id="biddingDescription">2 over 1 GF, 5♠,4♥,4♦,3♣ &amp; 15–17 NT</textarea>
+    </div>
+
+    <!-- 1NT OPENINGS -->
+    <h2>1NT Openings and Responses</h2>
+
+    <div class="grid-2">
+      <div class="field">
+        <label for="ntStrength">1NT strength</label>
+        <input id="ntStrength" type="text" value="15–17" />
+      </div>
+      <div class="field">
+        <label for="ntStrengthArtificial">If artificial – details</label>
+        <textarea id="ntStrengthArtificial"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="ntShape">Shape constraints</label>
+        <textarea id="ntShape">No singleton or void. No 6-card major or 7-card minor</textarea>
+      </div>
+      <div class="field">
+        <label for="ntShapeArtificial">If may have singleton – details</label>
+        <textarea id="ntShapeArtificial">May contain singleton Ace or King</textarea>
+      </div>
+    </div>
+
+    <h3>Responses to 1NT</h3>
+    <div class="grid-2">
+      <div class="field">
+        <label for="nt2c">2♣ – meaning</label>
+        <textarea id="nt2c">Stayman, may be weak, may take to minor</textarea>
+      </div>
+      <div class="field">
+        <label for="nt2d">2♦ – meaning</label>
+        <textarea id="nt2d">Transfer to ♥ (break xx)</textarea>
+      </div>
+      <div class="field">
+        <label for="nt2h">2♥ – meaning</label>
+        <textarea id="nt2h">Transfer to ♠ (break xx)</textarea>
+      </div>
+      <div class="field">
+        <label for="nt2s">2♠ – meaning</label>
+        <textarea id="nt2s">Minor-suit Stayman: 2NT = 3–3, 3♣/3♦ = longer minor</textarea>
+      </div>
+      <div class="field">
+        <label for="nt2nt">2NT – meaning</label>
+        <textarea id="nt2nt">Transfer to ♣</textarea>
+      </div>
+      <div class="field">
+        <label for="ntOthers">Other 1NT responses</label>
+        <textarea id="ntOthers">3♣ – transfer to ♦; 3♦ = 4-4-4-1 with a major; 3♥/3♠ = that major + 4/5 minors</textarea>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label for="afterDouble">Action after opponents double</label>
+        <textarea id="afterDouble">Redouble = to play; all two-level bids are transfers (escape system)</textarea>
+      </div>
+      <div class="field">
+        <label for="afterInterference">Action after other interference</label>
+        <textarea id="afterInterference">Lebensohl; double shows values. Transfer over 2♣/2♦ natural; penalties over 2♥/2♠</textarea>
+      </div>
+    </div>
+
+    <!-- TWO-LEVEL OPENINGS -->
+    <h2>Two-level openings and responses</h2>
+
+    <div class="field small">“Notes” column on page 1 shows a note number; the actual text appears on page 4.</div>
+
+    <h3>2♣</h3>
+    <div class="grid-3">
+      <div class="field">
+        <label for="twoCMeaning">Meaning</label>
+        <textarea id="twoCMeaning">23+ balanced or 9+ tricks. 2♦ weak/waiting; positive = 8+ with a good suit.</textarea>
+      </div>
+      <div class="field">
+        <label for="twoCResponses">Responses</label>
+        <textarea id="twoCResponses">2♦ waiting, strong or weak; 2M = strong 6-card suit. After 2♣–2♦, 2NT/3♣ = puppet Stayman.</textarea>
+      </div>
+      <div class="field">
+        <label for="twoCNotes">Note text (note 1)</label>
+        <textarea id="twoCNotes"></textarea>
+      </div>
+    </div>
+
+    <h3>2♦</h3>
+    <div class="grid-3">
+      <div class="field">
+        <label for="twoDMeaning">Meaning</label>
+        <textarea id="twoDMeaning">Multi: weak 2♥/2♠ or 20–22 balanced.</textarea>
+      </div>
+      <div class="field">
+        <label for="twoDResponses">Responses</label>
+        <textarea id="twoDResponses">2♥/2♠: pass or correct. 2NT relay; 3♣ = ♥ minimum; 3♠ = ♥ maximum etc.</textarea>
+      </div>
+      <div class="field">
+        <label for="twoDNotes">Note text (note 2)</label>
+        <textarea id="twoDNotes"></textarea>
+      </div>
+    </div>
+
+    <h3>2♥</h3>
+    <div class="grid-3">
+      <div class="field">
+        <label for="twoHMeaning">Meaning</label>
+        <textarea id="twoHMeaning">5♥ and 4+ in another suit.</textarea>
+      </div>
+      <div class="field">
+        <label for="twoHResponses">Responses</label>
+        <textarea id="twoHResponses">2NT enquiry; 3♦ = major-suit invite.</textarea>
+      </div>
+      <div class="field">
+        <label for="twoHNotes">Note text (note 3)</label>
+        <textarea id="twoHNotes"></textarea>
+      </div>
+    </div>
+
+    <h3>2♠</h3>
+    <div class="grid-3">
+      <div class="field">
+        <label for="twoSMeaning">Meaning</label>
+        <textarea id="twoSMeaning">5♠ and 4+ in ♣/♦.</textarea>
+      </div>
+      <div class="field">
+        <label for="twoSResponses">Responses</label>
+        <textarea id="twoSResponses">2NT enquiry; 3♦ = major-suit invite.</textarea>
+      </div>
+      <div class="field">
+        <label for="twoSNotes">Note text (note 4)</label>
+        <textarea id="twoSNotes"></textarea>
+      </div>
+    </div>
+
+    <h3>2NT</h3>
+    <div class="grid-3">
+      <div class="field">
+        <label for="twoNTMeaning">Meaning</label>
+        <textarea id="twoNTMeaning">Both minors, 5-5 in principle.</textarea>
+      </div>
+      <div class="field">
+        <label for="twoNTResponses">Responses</label>
+        <textarea id="twoNTResponses"></textarea>
+      </div>
+      <div class="field">
+        <label for="twoNTNotes">Note text (note 5)</label>
+        <textarea id="twoNTNotes"></textarea>
+      </div>
+    </div>
+
+    <!-- OTHER ASPECTS -->
+    <h2>Other aspects of system which opponents should note</h2>
+    <div class="field">
+      <textarea id="otherAspects">Over 1-of-a-suit: 1NT = highest & lowest unbid suits; 2♣ = two lowest unbid suits; 2♦ = two highest unbid suits. Length 4+/4+. 6 HCP+ non-vul, 8+ vul; with 5-5, bid one level higher.</textarea>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+      <span id="status" class="status"></span>
+      <button id="saveBtn" class="secondary" disabled>Save and continue</button>
+      <button id="publishBtn" disabled>Publish PDF (4-page card layout)</button>
+    </div>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    const fields = [
+      "playerName","playerNumber","partnerName","partnerNumber",
+      "biddingDescription","ntStrength","ntStrengthArtificial",
+      "ntShape","ntShapeArtificial","nt2c","nt2d","nt2h","nt2s",
+      "nt2nt","ntOthers","afterDouble","afterInterference",
+      "twoCMeaning","twoCResponses","twoCNotes",
+      "twoDMeaning","twoDResponses","twoDNotes",
+      "twoHMeaning","twoHResponses","twoHNotes",
+      "twoSMeaning","twoSResponses","twoSNotes",
+      "twoNTMeaning","twoNTResponses","twoNTNotes",
+      "otherAspects"
+    ];
+
+    const statusEl = $("status");
+    const saveBtn = $("saveBtn");
+    const publishBtn = $("publishBtn");
+
+    // ---------- FONT LOADING (UNICODE / SUITS) ----------
+    let fontLoaded = false;
+    let fontPromise = null;
+
+    async function ensureFont(doc) {
+      if (fontLoaded) {
+        doc.setFont("NotoSans", "normal");
+        return;
+      }
+      if (!fontPromise) {
+        const regularUrl = "https://fonts.gstatic.com/s/notosans/v27/o-0FIpksx3YVZb_r2wZP.ttf";
+        const boldUrl    = "https://fonts.gstatic.com/s/notosans/v27/o-0NIpksx3YVZbWx3zrQ9.ttf";
+
+        fontPromise = Promise.all([
+          fetch(regularUrl).then(r => r.arrayBuffer()),
+          fetch(boldUrl).then(r => r.arrayBuffer())
+        ]).then(([regBuf, boldBuf]) => {
+          function toBase64(buf) {
+            const bytes = new Uint8Array(buf);
+            let binary = "";
+            for (let i = 0; i < bytes.length; i++) {
+              binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+          }
+
+          const regB64 = toBase64(regBuf);
+          const boldB64 = toBase64(boldBuf);
+
+          doc.addFileToVFS("NotoSans-Regular.ttf", regB64);
+          doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
+
+          doc.addFileToVFS("NotoSans-Bold.ttf", boldB64);
+          doc.addFont("NotoSans-Bold.ttf", "NotoSans", "bold");
+
+          fontLoaded = true;
+        }).catch(err => {
+          console.error("Font load failed; falling back to built-in font.", err);
+        });
+      }
+
+      await fontPromise;
+
+      if (fontLoaded) {
+        doc.setFont("NotoSans", "normal");
+      } else {
+        doc.setFont("helvetica", "normal");
+      }
+    }
+
+    // ---------- DATA & VALIDATION ----------
+
+    const tmpTextArea = document.createElement("textarea");
+
+    function decodeHtmlEntities(str) {
+      if (!str) return "";
+      tmpTextArea.innerHTML = str;
+      let s = tmpTextArea.value;
+      s = s.replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num, 10)));
+      s = s
+        .replace(/&clubs;?/gi, "♣")
+        .replace(/&hearts;?/gi, "♥")
+        .replace(/&diams;?|&diamonds;?/gi, "♦")
+        .replace(/&spades;?/gi, "♠");
+      return s;
+    }
+
+    function getData() {
+      const data = {};
+      fields.forEach(f => data[f] = decodeHtmlEntities($(f).value.trim()));
+      return data;
+    }
+
+    function validateRequired() {
+      const d = getData();
+      const ok = d.playerName && d.playerNumber &&
+                 d.partnerName && d.partnerNumber &&
+                 d.biddingDescription;
+      saveBtn.disabled = !ok;
+      publishBtn.disabled = !ok;
+    }
+
+    fields.forEach(f => {
+      $(f).addEventListener("input", () => {
+        validateRequired();
+        statusEl.textContent = "";
+      });
+    });
+
+    (function restore() {
+      try {
+        const raw = localStorage.getItem("ebuSystemCardPage1");
+        if (!raw) { validateRequired(); return; }
+        const data = JSON.parse(raw);
+        fields.forEach(f => {
+          if (data[f] !== undefined) $(f).value = data[f];
+        });
+      } catch (_) {}
+      validateRequired();
+    })();
+
+    saveBtn.addEventListener("click", () => {
+      localStorage.setItem("ebuSystemCardPage1", JSON.stringify(getData()));
+      statusEl.textContent = "Saved. (Next step: page 2 builder.)";
+      setTimeout(() => statusEl.textContent = "", 3000);
+    });
+
+    publishBtn.addEventListener("click", async () => {
+      await generatePdf(getData());
+    });
+
+    // ---------- PDF GENERATION ----------
+
+    async function generatePdf(data) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+
+      await ensureFont(doc);
+
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+      const margin = 24;
+      const gap = 12;
+      const panelW = (pageW - 2 * margin - gap) / 2;
+      const panelH = pageH - 2 * margin;
+
+      // SHEET 1: Page 4 (left) + Page 1 (right)
+      drawPage4(doc, margin, margin, panelW, panelH, data);
+      drawPage1(doc, margin + panelW + gap, margin, panelW, panelH, data);
+
+      // SHEET 2: Page 2 (left) + Page 3 (right)
+      doc.addPage();
+      drawPage2(doc, margin, margin, panelW, panelH);
+      drawPage3(doc, margin + panelW + gap, margin, panelW, panelH);
+
+      doc.save("ebu-system-card.pdf");
+    }
+
+    // ---------- DRAWING HELPERS ----------
+
+    function setFontRegular(doc, size) {
+      doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "normal");
+      doc.setFontSize(size);
+    }
+    function setFontBold(doc, size) {
+      if (fontLoaded) doc.setFont("NotoSans", "bold");
+      else doc.setFont("helvetica", "bold");
+      doc.setFontSize(size);
+    }
+
+    function drawFrame(doc, x, y, w, h) {
+      doc.setLineWidth(1.0);
+      doc.rect(x, y, w, h);
+    }
+
+    function drawCenteredText(doc, text, x, y, size, bold = false) {
+      if (bold) setFontBold(doc, size); else setFontRegular(doc, size);
+      doc.text(text, x, y, { align: "center" });
+    }
+
+    function drawHeaderRow(doc, x, y, w, h, text, size = 9) {
+      doc.setLineWidth(0.6);
+      doc.rect(x, y, w, h);
+      drawCenteredText(doc, text, x + w / 2, y + h / 2 + 3, size, true);
+    }
+
+    function drawLabelCell(doc, x, y, w, h, label, text) {
+      doc.setLineWidth(0.4);
+      doc.rect(x, y, w, h);
+
+      setFontBold(doc, 7.5);
+      const labelLines = doc.splitTextToSize(label || "", w - 6);
+      doc.text(labelLines, x + 3, y + 9);
+
+      const bodyStartY = y + 9 + labelLines.length * 8 + 2;
+      setFontRegular(doc, 7);
+      const body = doc.splitTextToSize(text || "", w - 6);
+      doc.text(body, x + 3, bodyStartY);
+    }
+
+    function drawPage1(doc, x, y, w, h, d) {
+      drawFrame(doc, x, y, w, h);
+
+      const innerPad = 6;
+      let cursorY = y + innerPad;
+
+      const topH = 45;
+      doc.setLineWidth(0.6);
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, topH);
+      const leftX = x + innerPad + 6;
+      const rightX = x + w - innerPad - 6;
+
+      setFontBold(doc, 9.5);
+      doc.text("Name", leftX, cursorY + 14);
+      doc.text("Partner", leftX, cursorY + 32);
+
+      setFontRegular(doc, 9);
+      doc.text(d.playerName || "", leftX + 45, cursorY + 14);
+      doc.text(d.partnerName || "", leftX + 45, cursorY + 32);
+
+      setFontBold(doc, 9);
+      doc.text("EBU No. " + (d.playerNumber || ""), rightX, cursorY + 14, { align: "right" });
+      doc.text("EBU No. " + (d.partnerNumber || ""), rightX, cursorY + 32, { align: "right" });
+
+      cursorY += topH + 4;
+
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 20,
+        "GENERAL DESCRIPTION OF BIDDING METHODS", 9);
+      cursorY += 20;
+
+      doc.setLineWidth(0.6);
+      const descH = 22;
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, descH);
+      setFontBold(doc, 8.5);
+      const descLines = doc.splitTextToSize(d.biddingDescription || "", w - 2 * innerPad - 8);
+      doc.text(descLines, x + w / 2, cursorY + 14, { align: "center" });
+      cursorY += descH + 3;
+
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
+        "1NT OPENINGS AND RESPONSES", 9);
+      cursorY += 18 + 1;
+
+      const rowH = 32;
+      const colLabelW = 80;
+      const colMainW = 150;
+      const colRestW = (w - 2 * innerPad) - colLabelW - colMainW;
+
+      drawLabelCell(doc, x + innerPad, cursorY, colLabelW, rowH,
+        "Strength", d.ntStrength || "");
+      drawLabelCell(doc, x + innerPad + colLabelW, cursorY, colMainW, rowH,
+        "", "");
+      drawLabelCell(doc, x + innerPad + colLabelW + colMainW, cursorY, colRestW, rowH,
+        "If artificial – details", d.ntStrengthArtificial || "");
+      cursorY += rowH;
+
+      drawLabelCell(doc, x + innerPad, cursorY, colLabelW, rowH,
+        "Shape constraints", "");
+      drawLabelCell(doc, x + innerPad + colLabelW, cursorY, colMainW, rowH,
+        "", d.ntShape || "");
+      drawLabelCell(doc, x + innerPad + colLabelW + colMainW, cursorY, colRestW, rowH,
+        "If may have singleton – details", d.ntShapeArtificial || "");
+      cursorY += rowH + 3;
+
+      const respHeadH = 16;
+      doc.setLineWidth(0.4);
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, respHeadH);
+      setFontBold(doc, 8);
+      doc.text("Responses", x + innerPad + 3, cursorY + 11);
+      cursorY += respHeadH;
+
+      const respRowH = 26;
+      const halfW = (w - 2 * innerPad) / 2;
+
+      function respRow(label1, text1, label2, text2) {
+        doc.setLineWidth(0.4);
+        doc.rect(x + innerPad, cursorY, halfW, respRowH);
+        doc.rect(x + innerPad + halfW, cursorY, halfW, respRowH);
+
+        setFontBold(doc, 8);
+        doc.text(label1, x + innerPad + 3, cursorY + 10);
+        doc.text(label2, x + innerPad + halfW + 3, cursorY + 10);
+
+        setFontRegular(doc, 7);
+        const t1 = doc.splitTextToSize(text1 || "", halfW - 6);
+        const t2 = doc.splitTextToSize(text2 || "", halfW - 6);
+        doc.text(t1, x + innerPad + 3, cursorY + 18);
+        doc.text(t2, x + innerPad + halfW + 3, cursorY + 18);
+        cursorY += respRowH;
+      }
+
+      respRow("2♣", d.nt2c, "2♦", d.nt2d);
+      respRow("2♥", d.nt2h, "2♠", d.nt2s);
+      respRow("2NT", d.nt2nt, "Others", d.ntOthers);
+
+      const actH = 26;
+      drawLabelCell(doc, x + innerPad, cursorY, colLabelW, actH,
+        "Action after opponents double", "");
+      drawLabelCell(doc, x + innerPad + colLabelW, cursorY,
+        (w - 2 * innerPad) - colLabelW, actH,
+        "", d.afterDouble || "");
+      cursorY += actH;
+
+      drawLabelCell(doc, x + innerPad, cursorY, colLabelW, actH,
+        "Action after other interference", "");
+      drawLabelCell(doc, x + innerPad + colLabelW, cursorY,
+        (w - 2 * innerPad) - colLabelW, actH,
+        "", d.afterInterference || "");
+      cursorY += actH + 4;
+
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
+        "TWO-LEVEL OPENINGS AND RESPONSES", 9);
+      cursorY += 18;
+
+      const headerH = 16;
+      const col1 = 32;
+      const col2 = 165;
+      const col3 = 165;
+      const col4 = (w - 2 * innerPad) - (col1 + col2 + col3);
+
+      doc.setLineWidth(0.4);
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, headerH);
+      setFontBold(doc, 8);
+      doc.text("Meaning", x + innerPad + col1 + 4, cursorY + 11);
+      doc.text("Responses", x + innerPad + col1 + col2 + 4, cursorY + 11);
+      doc.text("Notes", x + innerPad + col1 + col2 + col3 + 4, cursorY + 11);
+      cursorY += headerH;
+
+      function openingRow(label, m, r, noteText, noteIndex) {
+        const rowH = 26;
+        doc.rect(x + innerPad, cursorY, col1, rowH);
+        doc.rect(x + innerPad + col1, cursorY, col2, rowH);
+        doc.rect(x + innerPad + col1 + col2, cursorY, col3, rowH);
+        doc.rect(x + innerPad + col1 + col2 + col3, cursorY, col4, rowH);
+
+        setFontBold(doc, 9);
+        doc.text(label, x + innerPad + 4, cursorY + 16);
+
+        setFontRegular(doc, 7);
+        const tm = doc.splitTextToSize(m || "", col2 - 6);
+        const tr = doc.splitTextToSize(r || "", col3 - 6);
+        const displayNote = (noteText && noteText.length > 0) ? String(noteIndex) : "";
+        const tn = doc.splitTextToSize(displayNote, col4 - 6);
+        doc.text(tm, x + innerPad + col1 + 3, cursorY + 11);
+        doc.text(tr, x + innerPad + col1 + col2 + 3, cursorY + 11);
+        doc.text(tn, x + innerPad + col1 + col2 + col3 + 3, cursorY + 16);
+        cursorY += rowH;
+      }
+
+      openingRow("2♣", d.twoCMeaning, d.twoCResponses, d.twoCNotes, 1);
+      openingRow("2♦", d.twoDMeaning, d.twoDResponses, d.twoDNotes, 2);
+      openingRow("2♥", d.twoHMeaning, d.twoHResponses, d.twoHNotes, 3);
+      openingRow("2♠", d.twoSMeaning, d.twoSResponses, d.twoSNotes, 4);
+      openingRow("2NT", d.twoNTMeaning, d.twoNTResponses, d.twoNTNotes, 5);
+
+      cursorY += 3;
+
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
+        "OTHER ASPECTS OF SYSTEM WHICH OPPONENTS SHOULD NOTE", 9);
+      cursorY += 18;
+      const restH = y + h - cursorY - innerPad;
+      doc.setLineWidth(0.4);
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, restH);
+      setFontRegular(doc, 7);
+      const otherLines = doc.splitTextToSize(d.otherAspects || "", w - 2 * innerPad - 6);
+      doc.text(otherLines, x + innerPad + 3, cursorY + 11);
+    }
+
+    function drawPage2(doc, x, y, w, h) {
+      drawFrame(doc, x, y, w, h);
+      drawCenteredText(doc, "PAGE 2 – to be defined", x + w / 2, y + h / 2, 12, true);
+    }
+
+    function drawPage3(doc, x, y, w, h) {
+      drawFrame(doc, x, y, w, h);
+      drawCenteredText(doc, "PAGE 3 – to be defined", x + w / 2, y + h / 2, 12, true);
+    }
+
+    function drawPage4(doc, x, y, w, h, d) {
+      drawFrame(doc, x, y, w, h);
+      const innerPad = 8;
+      const headerH = 24;
+
+      drawHeaderRow(doc, x + innerPad, y + innerPad,
+        w - 2 * innerPad, headerH,
+        "SYSTEM NOTES (from page 1)", 10);
+
+      setFontRegular(doc, 8);
+
+      const notesData = [
+        { n: 1, text: d.twoCNotes },
+        { n: 2, text: d.twoDNotes },
+        { n: 3, text: d.twoHNotes },
+        { n: 4, text: d.twoSNotes },
+        { n: 5, text: d.twoNTNotes }
+      ];
+
+      const maxWidth = w - 2 * innerPad - 6;
+      const lineHeight = 10;
+      const gap = 4;
+
+      const rendered = [];
+      notesData.forEach(note => {
+        if (!note.text || note.text.trim().length === 0) return;
+        const prefix = note.n + ". ";
+        const lines = doc.splitTextToSize(prefix + note.text, maxWidth);
+        rendered.push({ lines });
+      });
+
+      if (rendered.length === 0) {
+        const msg = "No notes defined yet.";
+        const startY = y + h - innerPad - lineHeight;
+        doc.text(msg, x + innerPad + 3, startY);
+        return;
+      }
+
+      let totalHeight = 0;
+      rendered.forEach(r => {
+        totalHeight += r.lines.length * lineHeight + gap;
+      });
+
+      const minY = y + innerPad + headerH + 10;
+      let startY = y + h - innerPad - totalHeight;
+      if (startY < minY) startY = minY;
+
+      let cursorY = startY;
+      rendered.forEach(r => {
+        doc.text(r.lines, x + innerPad + 3, cursorY);
+        cursorY += r.lines.length * lineHeight + gap;
+      });
+    }
+  </script>
+</body>
+</html>
