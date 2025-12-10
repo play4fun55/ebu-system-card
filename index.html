@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EBU System Card – Page 1 Builder V0.0.3</title>
+  <title>EBU System Card – Page 1 Builder V0.1.0.4</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -121,7 +121,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>EBU System Card – Page 1 Builder V0.0.3</h1>
+    <h1>EBU System Card – Page 1 Builder V0.1.0.4</h1>
 
     <!-- HEADER -->
     <h2>Header</h2>
@@ -330,7 +330,89 @@
     const saveBtn = $("saveBtn");
     const publishBtn = $("publishBtn");
 
-    // ---------- FONT LOADING (UNICODE / SUITS) ----------
+    // ---------- SUIT NORMALISATION ----------
+    function cleanText(str) {
+      if (!str) return "";
+      let s = String(str);
+
+      // special shorthand from original card
+      s = s
+        .replace(/&`;/gi, "♠").replace(/&`/gi, "♠")
+        .replace(/&c;/gi, "♣").replace(/&c/gi, "♣")
+        .replace(/&e;/gi, "♦").replace(/&e/gi, "♦")
+        .replace(/&f;/gi, "♥").replace(/&f/gi, "♥");
+
+      // numeric / named entities
+      s = s.replace(/&#9824;|&spades;?/gi, "♠");
+      s = s.replace(/&#9827;|&clubs;?/gi,  "♣");
+      s = s.replace(/&#9830;|&diams;?|&diamonds;?/gi, "♦");
+      s = s.replace(/&#9829;|&hearts;?/gi, "♥");
+
+      return s;
+    }
+
+    function normaliseAllFields() {
+      fields.forEach(id => {
+        const el = $(id);
+        if (el && typeof el.value === "string") {
+          el.value = cleanText(el.value);
+        }
+      });
+    }
+
+    function getData() {
+      const data = {};
+      fields.forEach(f => data[f] = cleanText($(f).value.trim()));
+      return data;
+    }
+
+    function validateRequired() {
+      const d = getData();
+      const ok = d.playerName && d.playerNumber &&
+                 d.partnerName && d.partnerNumber &&
+                 d.biddingDescription;
+      saveBtn.disabled = !ok;
+      publishBtn.disabled = !ok;
+    }
+
+    fields.forEach(f => {
+      const el = $(f);
+      el.addEventListener("input", () => {
+        validateRequired();
+        statusEl.textContent = "";
+      });
+      el.addEventListener("blur", () => {
+        el.value = cleanText(el.value);
+      });
+    });
+
+    const STORAGE_KEY = "ebuSystemCardPage1_v10";
+
+    (function restore() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const data = JSON.parse(raw);
+          fields.forEach(f => {
+            if (data[f] !== undefined) $(f).value = data[f];
+          });
+        }
+      } catch (_) {}
+      normaliseAllFields();
+      validateRequired();
+    })();
+
+    saveBtn.addEventListener("click", () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getData()));
+      statusEl.textContent = "Saved. (Next step: page 2 builder.)";
+      setTimeout(() => statusEl.textContent = "", 3000);
+    });
+
+    publishBtn.addEventListener("click", async () => {
+      await generatePdf(getData());
+    });
+
+    // ---------- FONT LOADING FOR PDF ----------
     let fontLoaded = false;
     let fontPromise = null;
 
@@ -355,7 +437,6 @@
             }
             return btoa(binary);
           }
-
           const regB64 = toBase64(regBuf);
           const boldB64 = toBase64(boldBuf);
 
@@ -380,76 +461,7 @@
       }
     }
 
-    // ---------- SIMPLE SUIT NORMALISATION ----------
-
-    function cleanText(str) {
-      if (!str) return "";
-      let s = String(str);
-
-      // handle your shorthand codes (&c, &e, &f, &`) with or without ;
-      s = s
-        .replace(/&`;/gi, "♠").replace(/&`/gi, "♠")
-        .replace(/&c;/gi, "♣").replace(/&c/gi, "♣")
-        .replace(/&e;/gi, "♦").replace(/&e/gi, "♦")
-        .replace(/&f;/gi, "♥").replace(/&f/gi, "♥");
-
-      // numeric HTML entities
-      s = s.replace(/&#9824;|&spades;?/gi, "♠");
-      s = s.replace(/&#9827;|&clubs;?/gi,  "♣");
-      s = s.replace(/&#9830;|&diams;?|&diamonds;?/gi, "♦");
-      s = s.replace(/&#9829;|&hearts;?/gi, "♥");
-
-      return s;
-    }
-
-    function getData() {
-      const data = {};
-      fields.forEach(f => data[f] = cleanText($(f).value.trim()));
-      return data;
-    }
-
-    function validateRequired() {
-      const d = getData();
-      const ok = d.playerName && d.playerNumber &&
-                 d.partnerName && d.partnerNumber &&
-                 d.biddingDescription;
-      saveBtn.disabled = !ok;
-      publishBtn.disabled = !ok;
-    }
-
-    fields.forEach(f => {
-      $(f).addEventListener("input", () => {
-        validateRequired();
-        statusEl.textContent = "";
-      });
-    });
-
-    // NEW storage key so old &c/&e/&f/&` values are ignored
-    const STORAGE_KEY = "ebuSystemCardPage1_v3";
-
-    (function restore() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) { validateRequired(); return; }
-        const data = JSON.parse(raw);
-        fields.forEach(f => {
-          if (data[f] !== undefined) $(f).value = data[f];
-        });
-      } catch (_) {}
-      validateRequired();
-    })();
-
-    saveBtn.addEventListener("click", () => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(getData()));
-      statusEl.textContent = "Saved. (Next step: page 2 builder.)";
-      setTimeout(() => statusEl.textContent = "", 3000);
-    });
-
-    publishBtn.addEventListener("click", async () => {
-      await generatePdf(getData());
-    });
-
-    // ---------- PDF GENERATION ----------
+    // ---------- PDF GENERATION & DRAWING ----------
 
     async function generatePdf(data) {
       const { jsPDF } = window.jspdf;
@@ -464,11 +476,9 @@
       const panelW = (pageW - 2 * margin - gap) / 2;
       const panelH = pageH - 2 * margin;
 
-      // SHEET 1: Page 4 (left) + Page 1 (right)
       drawPage4(doc, margin, margin, panelW, panelH, data);
       drawPage1(doc, margin + panelW + gap, margin, panelW, panelH, data);
 
-      // SHEET 2: Page 2 (left) + Page 3 (right)
       doc.addPage();
       drawPage2(doc, margin, margin, panelW, panelH);
       drawPage3(doc, margin + panelW + gap, margin, panelW, panelH);
@@ -476,15 +486,12 @@
       doc.save("ebu-system-card.pdf");
     }
 
-    // ---------- DRAWING HELPERS ----------
-
     function setFontRegular(doc, size) {
       doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "normal");
       doc.setFontSize(size);
     }
     function setFontBold(doc, size) {
-      if (fontLoaded) doc.setFont("NotoSans", "bold");
-      else doc.setFont("helvetica", "bold");
+      doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "bold");
       doc.setFontSize(size);
     }
 
@@ -524,7 +531,6 @@
       const innerPad = 6;
       let cursorY = y + innerPad;
 
-      // top name area
       const topH = 45;
       doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, topH);
@@ -545,12 +551,10 @@
 
       cursorY += topH + 4;
 
-      // General description header
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 20,
         "GENERAL DESCRIPTION OF BIDDING METHODS", 9);
       cursorY += 20;
 
-      // Description line
       doc.setLineWidth(0.6);
       const descH = 22;
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, descH);
@@ -559,12 +563,10 @@
       doc.text(descLines, x + w / 2, cursorY + 14, { align: "center" });
       cursorY += descH + 3;
 
-      // 1NT Openings header
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
         "1NT OPENINGS AND RESPONSES", 9);
       cursorY += 18 + 1;
 
-      // Strength & Shape rows
       const rowH = 32;
       const colLabelW = 80;
       const colMainW = 150;
@@ -586,7 +588,6 @@
         "If may have singleton – details", d.ntShapeArtificial || "");
       cursorY += rowH + 3;
 
-      // Responses heading
       const respHeadH = 16;
       doc.setLineWidth(0.4);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, respHeadH);
@@ -594,7 +595,6 @@
       doc.text("Responses", x + innerPad + 3, cursorY + 11);
       cursorY += respHeadH;
 
-      // Responses grid
       const respRowH = 26;
       const halfW = (w - 2 * innerPad) / 2;
 
@@ -634,12 +634,10 @@
         "", d.afterInterference || "");
       cursorY += actH + 4;
 
-      // Two-level openings header
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
         "TWO-LEVEL OPENINGS AND RESPONSES", 9);
       cursorY += 18;
 
-      // Table header
       const headerH = 16;
       const col1 = 32;
       const col2 = 165;
@@ -683,7 +681,6 @@
 
       cursorY += 3;
 
-      // Other aspects
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
         "OTHER ASPECTS OF SYSTEM WHICH OPPONENTS SHOULD NOTE", 9);
       cursorY += 18;
