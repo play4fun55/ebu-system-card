@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EBU System Card – Page 1 Builder V0.4.0</title>
+  <title>EBU System Card – Page 1 Builder V0.4.1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -126,7 +126,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>EBU System Card – Page 1 Builder V0.4.0</h1>
+    <h1>EBU System Card – Page 1 Builder V0.4.1</h1>
 
     <!-- HEADER -->
     <h2>Header</h2>
@@ -551,7 +551,8 @@
       const bodyTop = curY + 2;
       const bodyH = y + h - 3 - bodyTop;
       if (bodyH > 4 && text) {
-        drawFittedText(doc, text, x, bodyTop, w, bodyH, 7, 5, "left", false);
+        // slightly larger base for readability
+        drawFittedText(doc, text, x, bodyTop, w, bodyH, 8, 5.5, "left", false);
       }
     }
 
@@ -584,8 +585,8 @@
       const innerPad = 6;
       let cursorY = y + innerPad;
 
-      // Top name area
-      const topH = 45;
+      // Top name area (slightly shorter)
+      const topH = 40;
       doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, topH);
       const leftX = x + innerPad + 6;
@@ -593,39 +594,39 @@
 
       setFontBold(doc, 9.5);
       doc.text("Name", leftX, cursorY + 14);
-      doc.text("Partner", leftX, cursorY + 32);
+      doc.text("Partner", leftX, cursorY + 30);
 
       setFontRegular(doc, 9);
       doc.text(d.playerName || "", leftX + 45, cursorY + 14);
-      doc.text(d.partnerName || "", leftX + 45, cursorY + 32);
+      doc.text(d.partnerName || "", leftX + 45, cursorY + 30);
 
       setFontBold(doc, 9);
       doc.text("EBU No. " + (d.playerNumber || ""), rightX, cursorY + 14, { align: "right" });
-      doc.text("EBU No. " + (d.partnerNumber || ""), rightX, cursorY + 32, { align: "right" });
+      doc.text("EBU No. " + (d.partnerNumber || ""), rightX, cursorY + 30, { align: "right" });
 
       cursorY += topH + 4;
 
       // General description header
-      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 20,
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
         "GENERAL DESCRIPTION OF BIDDING METHODS", 9);
-      cursorY += 20;
+      cursorY += 16;
 
-      // Description line with dynamic font
-      const descH = 22;
+      // Description line with dynamic font (slightly smaller box)
+      const descH = 18;
       doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, descH);
       drawFittedText(doc, d.biddingDescription || "",
         x + innerPad, cursorY, w - 2 * innerPad, descH, 8.5, 6, "center", true);
       cursorY += descH + 3;
 
-      // 1NT Openings header
-      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
+      // 1NT Openings header (slightly shorter)
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
         "1NT OPENINGS AND RESPONSES", 9);
-      cursorY += 18 + 1;
+      cursorY += 16 + 1;
 
       // --- Strength & Shape rows: 2 columns only, label + text in same cell ---
-
-      const rowH = 34;
+      // Reduced row height
+      const rowH = 28;
       const twoColW = (w - 2 * innerPad) / 2;
 
       // Row 1: Strength / If artificial
@@ -642,16 +643,17 @@
         "If may have singleton – details", d.ntShapeArtificial || "");
       cursorY += rowH + 3;
 
-      // Responses heading
-      const respHeadH = 16;
+      // Responses heading (shorter)
+      const respHeadH = 12;
       doc.setLineWidth(0.4);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, respHeadH);
       setFontBold(doc, 8);
-      doc.text("Responses", x + innerPad + 3, cursorY + 11);
+      doc.text("Responses", x + innerPad + 3, cursorY + 9);
       cursorY += respHeadH;
 
       // Responses grid (labels + text on same line block)
-      const respRowH = 24;
+      // Slightly shorter rows & larger base font for readability
+      const respRowH = 20;
       const halfW = (w - 2 * innerPad) / 2;
 
       function respRow(label1, text1, label2, text2) {
@@ -662,8 +664,8 @@
         const leftText = (label1 ? (label1 + ": ") : "") + (text1 || "");
         const rightText = (label2 ? (label2 + ": ") : "") + (text2 || "");
 
-        drawFittedText(doc, leftText, x + innerPad, cursorY, halfW, respRowH, 7.5, 5.5, "left", false);
-        drawFittedText(doc, rightText, x + innerPad + halfW, cursorY, halfW, respRowH, 7.5, 5.5, "left", false);
+        drawFittedText(doc, leftText, x + innerPad, cursorY, halfW, respRowH, 8, 6, "left", false);
+        drawFittedText(doc, rightText, x + innerPad + halfW, cursorY, halfW, respRowH, 8, 6, "left", false);
 
         cursorY += respRowH;
       }
@@ -672,27 +674,29 @@
       respRow("2H", d.nt2h, "2S", d.nt2s);
       respRow("2NT", d.nt2nt, "Others", d.ntOthers);
 
-      // Action rows
-      const actH = 28;
+      // Action rows – slightly shorter
+      const actH = 24;
       drawLabelCell(doc, x + innerPad, cursorY, 90, actH,
         "Action after opponents double", "");
-      drawLabelCell(doc, x + innerPad + 90, cursorY, (w - 2 * innerPad) - 90, actH,
+      drawLabelCell(doc, x + innerPad + 90, cursorY,
+        (w - 2 * innerPad) - 90, actH,
         "", d.afterDouble || "");
       cursorY += actH;
 
       drawLabelCell(doc, x + innerPad, cursorY, 90, actH,
         "Action after other interference", "");
-      drawLabelCell(doc, x + innerPad + 90, cursorY, (w - 2 * innerPad) - 90, actH,
+      drawLabelCell(doc, x + innerPad + 90, cursorY,
+        (w - 2 * innerPad) - 90, actH,
         "", d.afterInterference || "");
       cursorY += actH + 4;
 
-      // Two-level openings header
-      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
+      // Two-level openings header – a bit shorter
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
         "TWO-LEVEL OPENINGS AND RESPONSES", 9);
-      cursorY += 18;
+      cursorY += 16;
 
-      // Table header
-      const headerH = 16;
+      // Table header – slightly shorter
+      const headerH = 14;
       const col1 = 32;
       const col2 = 165;
       const col3 = 165;
@@ -701,13 +705,14 @@
       doc.setLineWidth(0.4);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, headerH);
       setFontBold(doc, 8);
-      doc.text("Meaning", x + innerPad + col1 + 4, cursorY + 11);
-      doc.text("Responses", x + innerPad + col1 + col2 + 4, cursorY + 11);
-      doc.text("Notes", x + innerPad + col1 + col2 + col3 + 4, cursorY + 11);
+      doc.text("Meaning", x + innerPad + col1 + 4, cursorY + 10);
+      doc.text("Responses", x + innerPad + col1 + col2 + 4, cursorY + 10);
+      doc.text("Notes", x + innerPad + col1 + col2 + col3 + 4, cursorY + 10);
       cursorY += headerH;
 
       function openingRow(label, m, r, noteText, noteIndex) {
-        const rowH = 30;
+        // Reduced row height from 30 -> 24
+        const rowH = 24;
         doc.rect(x + innerPad, cursorY, col1, rowH);
         doc.rect(x + innerPad + col1, cursorY, col2, rowH);
         doc.rect(x + innerPad + col1 + col2, cursorY, col3, rowH);
@@ -715,12 +720,12 @@
 
         // label cell
         setFontBold(doc, 9);
-        doc.text(label, x + innerPad + 4, cursorY + 16);
+        doc.text(label, x + innerPad + 4, cursorY + 14);
 
         // meaning
-        drawFittedText(doc, m || "", x + innerPad + col1, cursorY, col2, rowH, 7, 5, "left", false);
+        drawFittedText(doc, m || "", x + innerPad + col1, cursorY, col2, rowH, 7, 5.5, "left", false);
         // responses
-        drawFittedText(doc, r || "", x + innerPad + col1 + col2, cursorY, col3, rowH, 7, 5, "left", false);
+        drawFittedText(doc, r || "", x + innerPad + col1 + col2, cursorY, col3, rowH, 7, 5.5, "left", false);
         // notes: just the number
         const noteLabel = (noteText && noteText.length > 0) ? String(noteIndex) : "";
         if (noteLabel) {
@@ -738,17 +743,17 @@
 
       cursorY += 3;
 
-      // Other aspects header + large box (now taller thanks to saved space)
+      // Other aspects header + much larger box now
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
         "OTHER ASPECTS OF SYSTEM WHICH OPPONENTS SHOULD NOTE", 9);
       cursorY += 18;
 
-      const restH = y + h - cursorY - innerPad;
+      const restH = y + h - cursorY - innerPad; // now ~100+ pts
       doc.setLineWidth(0.4);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, restH);
 
       drawFittedText(doc, d.otherAspects || "",
-        x + innerPad, cursorY, w - 2 * innerPad, restH, 7, 5, "left", false);
+        x + innerPad, cursorY, w - 2 * innerPad, restH, 7.5, 5.5, "left", false);
     }
 
     function drawPage2(doc, x, y, w, h) {
