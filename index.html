@@ -299,7 +299,7 @@
     <!-- OTHER ASPECTS -->
     <h2>Other aspects of system which opponents should note</h2>
     <div class="field">
-      <textarea id="otherAspects">Over 1-of-a-suit: 1NT = highest & lowest unbid suits; 2♣ = two lowest unbid suits; 2♦ = two highest unbid suits. Length 4+/4+. 6 HCP+ non-vul, 8+ vul; with 5-5, bid one level higher.</textarea>
+      <textarea id="otherAspects">Over 1-of-a-suit: 1NT = highest &amp; lowest unbid suits; 2♣ = two lowest unbid suits; 2♦ = two highest unbid suits. Length 4+/4+. 6 HCP+ non-vul, 8+ vul; with 5-5, bid one level higher.</textarea>
     </div>
 
     <!-- ACTIONS -->
@@ -330,7 +330,71 @@
     const saveBtn = $("saveBtn");
     const publishBtn = $("publishBtn");
 
-    // ---------- FONT LOADING (UNICODE / SUITS) ----------
+    // --- NORMALISE SUIT SYMBOLS ------------------------------------
+    function normaliseSuits(str) {
+      if (!str) return "";
+      return String(str)
+        // shorthand codes from your original card
+        .replace(/&`/g,  "♠")
+        .replace(/&c/gi, "♣")
+        .replace(/&e/gi, "♦")
+        .replace(/&f/gi, "♥")
+
+        // numeric / named HTML entities, just in case
+        .replace(/&#9824;|&spades;?/gi,           "♠")
+        .replace(/&#9827;|&clubs;?/gi,            "♣")
+        .replace(/&#9830;|&diams;?|&diamonds;?/gi,"♦")
+        .replace(/&#9829;|&hearts;?/gi,           "♥");
+    }
+
+    function getData() {
+      const data = {};
+      fields.forEach(f => data[f] = normaliseSuits($(f).value.trim()));
+      return data;
+    }
+
+    function validateRequired() {
+      const d = getData();
+      const ok = d.playerName && d.playerNumber &&
+                 d.partnerName && d.partnerNumber &&
+                 d.biddingDescription;
+      saveBtn.disabled = !ok;
+      publishBtn.disabled = !ok;
+    }
+
+    fields.forEach(f => {
+      $(f).addEventListener("input", () => {
+        validateRequired();
+        statusEl.textContent = "";
+      });
+    });
+
+    // simple storage key (fresh)
+    const STORAGE_KEY = "ebuSystemCardPage1_v5";
+
+    (function restore() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) { validateRequired(); return; }
+        const data = JSON.parse(raw);
+        fields.forEach(f => {
+          if (data[f] !== undefined) $(f).value = data[f];
+        });
+      } catch (_) {}
+      validateRequired();
+    })();
+
+    saveBtn.addEventListener("click", () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getData()));
+      statusEl.textContent = "Saved. (Next step: page 2 builder.)";
+      setTimeout(() => statusEl.textContent = "", 3000);
+    });
+
+    publishBtn.addEventListener("click", async () => {
+      await generatePdf(getData());
+    });
+
+    // ---------- FONT LOADING (Noto Sans for Unicode suits) ----------
     let fontLoaded = false;
     let fontPromise = null;
 
@@ -380,83 +444,6 @@
       }
     }
 
-    // ---------- DATA & VALIDATION ----------
-
-    const tmpTextArea = document.createElement("textarea");
-
-function decodeHtmlEntities(str) {
-  if (!str) return "";
-  let s = String(str);
-
-  // First, aggressively convert your shorthand suit codes
-  // (&c, &e, &f, &`) with or without a semicolon, any case.
-  s = s
-    .replace(/&`;/g, "♠").replace(/&`/g, "♠")
-    .replace(/&c;/gi, "♣").replace(/&c/gi, "♣")
-    .replace(/&e;/gi, "♦").replace(/&e/gi, "♦")
-    .replace(/&f;/gi, "♥").replace(/&f/gi, "♥");
-
-  // Now pass through the textarea trick to decode normal HTML entities
-  tmpTextArea.innerHTML = s;
-  s = tmpTextArea.value;
-
-  // Decode numeric entities like &#9827;
-  s = s.replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num, 10)));
-
-  // Decode named HTML entities if any
-  s = s
-    .replace(/&clubs;?/gi, "♣")
-    .replace(/&hearts;?/gi, "♥")
-    .replace(/&diams;?|&diamonds;?/gi, "♦")
-    .replace(/&spades;?/gi, "♠");
-
-  return s;
-}
-
-    function getData() {
-      const data = {};
-      fields.forEach(f => data[f] = decodeHtmlEntities($(f).value.trim()));
-      return data;
-    }
-
-    function validateRequired() {
-      const d = getData();
-      const ok = d.playerName && d.playerNumber &&
-                 d.partnerName && d.partnerNumber &&
-                 d.biddingDescription;
-      saveBtn.disabled = !ok;
-      publishBtn.disabled = !ok;
-    }
-
-    fields.forEach(f => {
-      $(f).addEventListener("input", () => {
-        validateRequired();
-        statusEl.textContent = "";
-      });
-    });
-
-    (function restore() {
-      try {
-       const raw = localStorage.getItem("ebuSystemCardPage1_v2");
-        if (!raw) { validateRequired(); return; }
-        const data = JSON.parse(raw);
-        fields.forEach(f => {
-          if (data[f] !== undefined) $(f).value = data[f];
-        });
-      } catch (_) {}
-      validateRequired();
-    })();
-
-    saveBtn.addEventListener("click", () => {
-     localStorage.setItem("ebuSystemCardPage1_v2", JSON.stringify(getData()));
-      statusEl.textContent = "Saved. (Next step: page 2 builder.)";
-      setTimeout(() => statusEl.textContent = "", 3000);
-    });
-
-    publishBtn.addEventListener("click", async () => {
-      await generatePdf(getData());
-    });
-
     // ---------- PDF GENERATION ----------
 
     async function generatePdf(data) {
@@ -484,15 +471,12 @@ function decodeHtmlEntities(str) {
       doc.save("ebu-system-card.pdf");
     }
 
-    // ---------- DRAWING HELPERS ----------
-
     function setFontRegular(doc, size) {
       doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "normal");
       doc.setFontSize(size);
     }
     function setFontBold(doc, size) {
-      if (fontLoaded) doc.setFont("NotoSans", "bold");
-      else doc.setFont("helvetica", "bold");
+      doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "bold");
       doc.setFontSize(size);
     }
 
@@ -532,6 +516,7 @@ function decodeHtmlEntities(str) {
       const innerPad = 6;
       let cursorY = y + innerPad;
 
+      // Top name area
       const topH = 45;
       doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, topH);
@@ -552,10 +537,12 @@ function decodeHtmlEntities(str) {
 
       cursorY += topH + 4;
 
+      // General description header
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 20,
         "GENERAL DESCRIPTION OF BIDDING METHODS", 9);
       cursorY += 20;
 
+      // Description line
       doc.setLineWidth(0.6);
       const descH = 22;
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, descH);
@@ -564,10 +551,12 @@ function decodeHtmlEntities(str) {
       doc.text(descLines, x + w / 2, cursorY + 14, { align: "center" });
       cursorY += descH + 3;
 
+      // 1NT Openings header
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
         "1NT OPENINGS AND RESPONSES", 9);
       cursorY += 18 + 1;
 
+      // Strength & Shape rows
       const rowH = 32;
       const colLabelW = 80;
       const colMainW = 150;
@@ -589,6 +578,7 @@ function decodeHtmlEntities(str) {
         "If may have singleton – details", d.ntShapeArtificial || "");
       cursorY += rowH + 3;
 
+      // Responses heading
       const respHeadH = 16;
       doc.setLineWidth(0.4);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, respHeadH);
@@ -596,6 +586,7 @@ function decodeHtmlEntities(str) {
       doc.text("Responses", x + innerPad + 3, cursorY + 11);
       cursorY += respHeadH;
 
+      // Responses grid
       const respRowH = 26;
       const halfW = (w - 2 * innerPad) / 2;
 
@@ -635,10 +626,12 @@ function decodeHtmlEntities(str) {
         "", d.afterInterference || "");
       cursorY += actH + 4;
 
+      // Two-level openings header
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
         "TWO-LEVEL OPENINGS AND RESPONSES", 9);
       cursorY += 18;
 
+      // Table header
       const headerH = 16;
       const col1 = 32;
       const col2 = 165;
@@ -682,6 +675,7 @@ function decodeHtmlEntities(str) {
 
       cursorY += 3;
 
+      // Other aspects
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
         "OTHER ASPECTS OF SYSTEM WHICH OPPONENTS SHOULD NOTE", 9);
       cursorY += 18;
@@ -703,6 +697,7 @@ function decodeHtmlEntities(str) {
       drawCenteredText(doc, "PAGE 3 – to be defined", x + w / 2, y + h / 2, 12, true);
     }
 
+    // Page 4: notes (bottom of panel)
     function drawPage4(doc, x, y, w, h, d) {
       drawFrame(doc, x, y, w, h);
       const innerPad = 8;
