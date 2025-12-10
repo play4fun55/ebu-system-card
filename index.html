@@ -386,8 +386,19 @@
 
 function decodeHtmlEntities(str) {
   if (!str) return "";
-  tmpTextArea.innerHTML = str;
-  let s = tmpTextArea.value;
+  let s = String(str);
+
+  // First, aggressively convert your shorthand suit codes
+  // (&c, &e, &f, &`) with or without a semicolon, any case.
+  s = s
+    .replace(/&`;/g, "♠").replace(/&`/g, "♠")
+    .replace(/&c;/gi, "♣").replace(/&c/gi, "♣")
+    .replace(/&e;/gi, "♦").replace(/&e/gi, "♦")
+    .replace(/&f;/gi, "♥").replace(/&f/gi, "♥");
+
+  // Now pass through the textarea trick to decode normal HTML entities
+  tmpTextArea.innerHTML = s;
+  s = tmpTextArea.value;
 
   // Decode numeric entities like &#9827;
   s = s.replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num, 10)));
@@ -399,16 +410,9 @@ function decodeHtmlEntities(str) {
     .replace(/&diams;?|&diamonds;?/gi, "♦")
     .replace(/&spades;?/gi, "♠");
 
-  // Decode the shorthand codes that came from your original card:
-  // &c = clubs, &e = diamonds, &f = hearts, &` = spades
-  s = s
-    .replace(/&`/g, "♠")
-    .replace(/&c/g, "♣")
-    .replace(/&e/g, "♦")
-    .replace(/&f/g, "♥");
-
   return s;
 }
+
     function getData() {
       const data = {};
       fields.forEach(f => data[f] = decodeHtmlEntities($(f).value.trim()));
