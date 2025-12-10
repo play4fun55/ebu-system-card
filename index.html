@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EBU System Card – Page 1 Builder V0.2.0</title>
+  <title>EBU System Card – Page 1 Builder V0.3.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -98,6 +98,11 @@
       color: #333;
       box-shadow: none;
     }
+    button.danger {
+      background: #e53935;
+      color: #fff;
+      box-shadow: none;
+    }
     button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -121,32 +126,32 @@
 </head>
 <body>
   <div class="container">
-    <h1>EBU System Card – Page 1 Builder V0.2.0</h1>
+    <h1>EBU System Card – Page 1 Builder V0.3.0</h1>
 
     <!-- HEADER -->
     <h2>Header</h2>
     <div class="grid-2">
       <div class="field">
         <label for="playerName">Your name</label>
-        <input id="playerName" type="text" value="Espen Gisvold" />
+        <input id="playerName" type="text" placeholder="Your full name" />
       </div>
       <div class="field">
         <label for="playerNumber">Your EBU number</label>
-        <input id="playerNumber" type="text" value="491316" />
+        <input id="playerNumber" type="text" placeholder="e.g. 491316" />
       </div>
       <div class="field">
         <label for="partnerName">Partner's name</label>
-        <input id="partnerName" type="text" value="Svein Erik Dahl" />
+        <input id="partnerName" type="text" placeholder="Partner's full name" />
       </div>
       <div class="field">
         <label for="partnerNumber">Partner's EBU number</label>
-        <input id="partnerNumber" type="text" value="525143" />
+        <input id="partnerNumber" type="text" placeholder="e.g. 525143" />
       </div>
     </div>
 
     <div class="field">
       <label for="biddingDescription">General description of bidding methods</label>
-      <textarea id="biddingDescription">2 over 1 GF, 5S,4H,4D,3C &amp; 15–17 NT</textarea>
+      <textarea id="biddingDescription" placeholder="e.g. 2 over 1 GF, 5M, 15–17 NT"></textarea>
     </div>
 
     <!-- 1NT OPENINGS -->
@@ -155,7 +160,7 @@
     <div class="grid-2">
       <div class="field">
         <label for="ntStrength">1NT strength</label>
-        <input id="ntStrength" type="text" value="15–17" />
+        <input id="ntStrength" type="text" placeholder="e.g. 15–17" />
       </div>
       <div class="field">
         <label for="ntStrengthArtificial">If artificial – details</label>
@@ -164,11 +169,11 @@
 
       <div class="field">
         <label for="ntShape">Shape constraints</label>
-        <textarea id="ntShape">No singleton or void. No 6-card major or 7-card minor</textarea>
+        <textarea id="ntShape" placeholder="e.g. No singleton or void. No 6-card major or 7-card minor"></textarea>
       </div>
       <div class="field">
         <label for="ntShapeArtificial">If may have singleton – details</label>
-        <textarea id="ntShapeArtificial">May contain singleton Ace or King</textarea>
+        <textarea id="ntShapeArtificial" placeholder="e.g. May contain singleton Ace or King"></textarea>
       </div>
     </div>
 
@@ -176,38 +181,38 @@
     <div class="grid-2">
       <div class="field">
         <label for="nt2c">2♣ – meaning</label>
-        <textarea id="nt2c">Stayman, may be weak, may take to minor</textarea>
+        <textarea id="nt2c" placeholder="Stayman, may be weak, may take to minor"></textarea>
       </div>
       <div class="field">
         <label for="nt2d">2♦ – meaning</label>
-        <textarea id="nt2d">Transfer to ♥ (break xx)</textarea>
+        <textarea id="nt2d" placeholder="Transfer to ♥ (break xx)"></textarea>
       </div>
       <div class="field">
         <label for="nt2h">2♥ – meaning</label>
-        <textarea id="nt2h">Transfer to ♠ (break xx)</textarea>
+        <textarea id="nt2h" placeholder="Transfer to ♠ (break xx)"></textarea>
       </div>
       <div class="field">
         <label for="nt2s">2♠ – meaning</label>
-        <textarea id="nt2s">Minor-suit Stayman: 2NT = 3–3, 3♣/3♦ = longer minor</textarea>
+        <textarea id="nt2s" placeholder="Minor-suit Stayman: 2NT = 3–3, 3♣/3♦ = longer minor"></textarea>
       </div>
       <div class="field">
         <label for="nt2nt">2NT – meaning</label>
-        <textarea id="nt2nt">Transfer to ♣</textarea>
+        <textarea id="nt2nt" placeholder="Transfer to ♣"></textarea>
       </div>
       <div class="field">
         <label for="ntOthers">Other 1NT responses</label>
-        <textarea id="ntOthers">3♣ – transfer to ♦; 3♦ = 4-4-4-1 with a major; 3♥/3♠ = that major + 4/5 minors</textarea>
+        <textarea id="ntOthers" placeholder="e.g. 3♣ – transfer to ♦; 3♦ = 4-4-4-1 with a major; etc."></textarea>
       </div>
     </div>
 
     <div class="grid-2">
       <div class="field">
         <label for="afterDouble">Action after opponents double</label>
-        <textarea id="afterDouble">Redouble = to play; all two-level bids are transfers (escape system)</textarea>
+        <textarea id="afterDouble" placeholder="e.g. Redouble = to play; all two-level bids are transfers (escape system)"></textarea>
       </div>
       <div class="field">
         <label for="afterInterference">Action after other interference</label>
-        <textarea id="afterInterference">Lebensohl; double shows values. Transfer over 2♣/2♦ natural; penalties over 2♥/2♠</textarea>
+        <textarea id="afterInterference" placeholder="e.g. Lebensohl; double shows values; etc."></textarea>
       </div>
     </div>
 
@@ -220,11 +225,11 @@
     <div class="grid-3">
       <div class="field">
         <label for="twoCMeaning">Meaning</label>
-        <textarea id="twoCMeaning">23+ balanced or 9+ tricks. 2♦ weak/waiting; positive = 8+ with a good suit.</textarea>
+        <textarea id="twoCMeaning" placeholder="Meaning of 2C"></textarea>
       </div>
       <div class="field">
         <label for="twoCResponses">Responses</label>
-        <textarea id="twoCResponses">2♦ waiting, strong or weak; 2M = strong 6-card suit. After 2♣–2♦, 2NT/3♣ = puppet Stayman.</textarea>
+        <textarea id="twoCResponses" placeholder="Responses to 2C"></textarea>
       </div>
       <div class="field">
         <label for="twoCNotes">Note text (note 1)</label>
@@ -236,11 +241,11 @@
     <div class="grid-3">
       <div class="field">
         <label for="twoDMeaning">Meaning</label>
-        <textarea id="twoDMeaning">Multi: weak 2♥/2♠ or 20–22 balanced.</textarea>
+        <textarea id="twoDMeaning" placeholder="Meaning of 2D"></textarea>
       </div>
       <div class="field">
         <label for="twoDResponses">Responses</label>
-        <textarea id="twoDResponses">2♥/2♠: pass or correct. 2NT relay; 3♣ = ♥ minimum; 3♠ = ♥ maximum etc.</textarea>
+        <textarea id="twoDResponses" placeholder="Responses to 2D"></textarea>
       </div>
       <div class="field">
         <label for="twoDNotes">Note text (note 2)</label>
@@ -252,11 +257,11 @@
     <div class="grid-3">
       <div class="field">
         <label for="twoHMeaning">Meaning</label>
-        <textarea id="twoHMeaning">5♥ and 4+ in another suit.</textarea>
+        <textarea id="twoHMeaning" placeholder="Meaning of 2H"></textarea>
       </div>
       <div class="field">
         <label for="twoHResponses">Responses</label>
-        <textarea id="twoHResponses">2NT enquiry; 3♦ = major-suit invite.</textarea>
+        <textarea id="twoHResponses" placeholder="Responses to 2H"></textarea>
       </div>
       <div class="field">
         <label for="twoHNotes">Note text (note 3)</label>
@@ -268,11 +273,11 @@
     <div class="grid-3">
       <div class="field">
         <label for="twoSMeaning">Meaning</label>
-        <textarea id="twoSMeaning">5♠ and 4+ in ♣/♦.</textarea>
+        <textarea id="twoSMeaning" placeholder="Meaning of 2S"></textarea>
       </div>
       <div class="field">
         <label for="twoSResponses">Responses</label>
-        <textarea id="twoSResponses">2NT enquiry; 3♦ = major-suit invite.</textarea>
+        <textarea id="twoSResponses" placeholder="Responses to 2S"></textarea>
       </div>
       <div class="field">
         <label for="twoSNotes">Note text (note 4)</label>
@@ -284,11 +289,11 @@
     <div class="grid-3">
       <div class="field">
         <label for="twoNTMeaning">Meaning</label>
-        <textarea id="twoNTMeaning">Both minors, 5-5 in principle.</textarea>
+        <textarea id="twoNTMeaning" placeholder="Meaning of 2NT"></textarea>
       </div>
       <div class="field">
         <label for="twoNTResponses">Responses</label>
-        <textarea id="twoNTResponses"></textarea>
+        <textarea id="twoNTResponses" placeholder="Responses to 2NT"></textarea>
       </div>
       <div class="field">
         <label for="twoNTNotes">Note text (note 5)</label>
@@ -299,14 +304,15 @@
     <!-- OTHER ASPECTS -->
     <h2>Other aspects of system which opponents should note</h2>
     <div class="field">
-      <textarea id="otherAspects">Over 1-of-a-suit: 1NT = highest & lowest unbid suits; 2C = two lowest unbid suits; 2D = two highest unbid suits. Length 4+/4+. 6 HCP+ non-vul, 8+ vul; with 5-5, bid one level higher.</textarea>
+      <textarea id="otherAspects" placeholder="Cue-bids, unusual 2NT, defensive conventions, etc."></textarea>
     </div>
 
     <!-- ACTIONS -->
     <div class="actions">
       <span id="status" class="status"></span>
-      <button id="saveBtn" class="secondary" disabled>Save and continue</button>
-      <button id="publishBtn" disabled>Publish PDF (4-page card layout)</button>
+      <button id="clearBtn" type="button" class="danger">Clear</button>
+      <button id="saveBtn" type="button" class="secondary" disabled>Save and continue</button>
+      <button id="publishBtn" type="button" disabled>Publish PDF (4-page card layout)</button>
     </div>
   </div>
 
@@ -329,8 +335,38 @@
     const statusEl = $("status");
     const saveBtn = $("saveBtn");
     const publishBtn = $("publishBtn");
+    const clearBtn = $("clearBtn");
 
-    // ---------- SUIT NORMALISATION (only for input text) ----------
+    // ---------- COOKIE HELPERS ----------
+    const COOKIE_NAME = "ebuSystemCardPage1";
+
+    function setCookie(name, value, days) {
+      let expires = "";
+      if (days) {
+        const d = new Date();
+        d.setTime(d.getTime() + days*24*60*60*1000);
+        expires = "; expires=" + d.toUTCString();
+      }
+      document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+      const nameEQ = name + "=";
+      const ca = document.cookie.split(";");
+      for (let c of ca) {
+        c = c.trim();
+        if (c.indexOf(nameEQ) === 0) {
+          return decodeURIComponent(c.substring(nameEQ.length));
+        }
+      }
+      return null;
+    }
+
+    function eraseCookie(name) {
+      document.cookie = name + "=; Max-Age=-1; path=/";
+    }
+
+    // ---------- SIMPLE TEXT NORMALISATION ----------
     function cleanText(str) {
       if (!str) return "";
       let s = String(str);
@@ -342,7 +378,6 @@
         .replace(/&e;/gi, "D").replace(/&e/gi, "D")
         .replace(/&f;/gi, "H").replace(/&f/gi, "H");
 
-      // numeric / named entities just in case
       s = s.replace(/&#9824;|&spades;?/gi, "S");
       s = s.replace(/&#9827;|&clubs;?/gi,  "C");
       s = s.replace(/&#9830;|&diams;?|&diamonds;?/gi, "D");
@@ -366,6 +401,16 @@
       return data;
     }
 
+    function setData(data) {
+      fields.forEach(f => {
+        if (data[f] !== undefined && data[f] !== null) {
+          $(f).value = data[f];
+        }
+      });
+      normaliseAllFields();
+      validateRequired();
+    }
+
     function validateRequired() {
       const d = getData();
       const ok = d.playerName && d.playerNumber &&
@@ -375,6 +420,7 @@
       publishBtn.disabled = !ok;
     }
 
+    // Attach input / blur handlers
     fields.forEach(f => {
       const el = $(f);
       el.addEventListener("input", () => {
@@ -386,33 +432,47 @@
       });
     });
 
-    const STORAGE_KEY = "ebuSystemCardPage1_v20";
-
-    (function restore() {
+    // Restore from cookie on load
+    (function restoreFromCookie() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const data = JSON.parse(raw);
-          fields.forEach(f => {
-            if (data[f] !== undefined) $(f).value = data[f];
-          });
+        const raw = getCookie(COOKIE_NAME);
+        if (!raw) {
+          validateRequired();
+          return;
         }
-      } catch (_) {}
-      normaliseAllFields();
+        const data = JSON.parse(raw);
+        setData(data);
+      } catch (e) {
+        console.error("Failed to parse cookie data:", e);
+      }
       validateRequired();
     })();
 
+    // Save button
     saveBtn.addEventListener("click", () => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(getData()));
-      statusEl.textContent = "Saved. (Next step: page 2 builder.)";
-      setTimeout(() => statusEl.textContent = "", 3000);
+      const data = getData();
+      setCookie(COOKIE_NAME, JSON.stringify(data), 365); // 1 year
+      statusEl.textContent = "Saved in cookie. (Next step: page 2 builder.)";
+      setTimeout(() => statusEl.textContent = "", 4000);
     });
 
+    // Clear button
+    clearBtn.addEventListener("click", () => {
+      fields.forEach(f => {
+        $(f).value = "";
+      });
+      eraseCookie(COOKIE_NAME);
+      validateRequired();
+      statusEl.textContent = "All fields cleared and cookie removed.";
+      setTimeout(() => statusEl.textContent = "", 4000);
+    });
+
+    // Publish PDF
     publishBtn.addEventListener("click", async () => {
       await generatePdf(getData());
     });
 
-    // ---------- PDF GENERATION (helvetica only, no Unicode fun) ----------
+    // ---------- PDF GENERATION (helvetica only) ----------
     async function generatePdf(data) {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
@@ -563,7 +623,6 @@
         cursorY += respRowH;
       }
 
-      // NOTE: STATIC LABELS NOW PURE ASCII: 2C, 2D, 2H, 2S, 2NT, Others
       respRow("2C", d.nt2c, "2D", d.nt2d);
       respRow("2H", d.nt2h, "2S", d.nt2s);
       respRow("2NT", d.nt2nt, "Others", d.ntOthers);
@@ -622,7 +681,6 @@
         cursorY += rowH;
       }
 
-      // NOTE: STATIC LABELS HERE ALSO PURE ASCII
       openingRow("2C", d.twoCMeaning, d.twoCResponses, d.twoCNotes, 1);
       openingRow("2D", d.twoDMeaning, d.twoDResponses, d.twoDNotes, 2);
       openingRow("2H", d.twoHMeaning, d.twoHResponses, d.twoHNotes, 3);
