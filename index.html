@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EBU System Card – Page 1 Builder V0.0.2</title>
+  <title>EBU System Card – Page 1 Builder V0.0.3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -121,7 +121,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>EBU System Card – Page 1 Builder V0.0.2</h1>
+    <h1>EBU System Card – Page 1 Builder V0.0.3</h1>
 
     <!-- HEADER -->
     <h2>Header</h2>
@@ -330,71 +330,7 @@
     const saveBtn = $("saveBtn");
     const publishBtn = $("publishBtn");
 
-    // --- NORMALISE SUIT SYMBOLS ------------------------------------
-    function normaliseSuits(str) {
-      if (!str) return "";
-      return String(str)
-        // shorthand codes from your original card
-        .replace(/&`/g,  "♠")
-        .replace(/&c/gi, "♣")
-        .replace(/&e/gi, "♦")
-        .replace(/&f/gi, "♥")
-
-        // numeric / named HTML entities, just in case
-        .replace(/&#9824;|&spades;?/gi,           "♠")
-        .replace(/&#9827;|&clubs;?/gi,            "♣")
-        .replace(/&#9830;|&diams;?|&diamonds;?/gi,"♦")
-        .replace(/&#9829;|&hearts;?/gi,           "♥");
-    }
-
-    function getData() {
-      const data = {};
-      fields.forEach(f => data[f] = normaliseSuits($(f).value.trim()));
-      return data;
-    }
-
-    function validateRequired() {
-      const d = getData();
-      const ok = d.playerName && d.playerNumber &&
-                 d.partnerName && d.partnerNumber &&
-                 d.biddingDescription;
-      saveBtn.disabled = !ok;
-      publishBtn.disabled = !ok;
-    }
-
-    fields.forEach(f => {
-      $(f).addEventListener("input", () => {
-        validateRequired();
-        statusEl.textContent = "";
-      });
-    });
-
-    // simple storage key (fresh)
-    const STORAGE_KEY = "ebuSystemCardPage1_v5";
-
-    (function restore() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) { validateRequired(); return; }
-        const data = JSON.parse(raw);
-        fields.forEach(f => {
-          if (data[f] !== undefined) $(f).value = data[f];
-        });
-      } catch (_) {}
-      validateRequired();
-    })();
-
-    saveBtn.addEventListener("click", () => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(getData()));
-      statusEl.textContent = "Saved. (Next step: page 2 builder.)";
-      setTimeout(() => statusEl.textContent = "", 3000);
-    });
-
-    publishBtn.addEventListener("click", async () => {
-      await generatePdf(getData());
-    });
-
-    // ---------- FONT LOADING (Noto Sans for Unicode suits) ----------
+    // ---------- FONT LOADING (UNICODE / SUITS) ----------
     let fontLoaded = false;
     let fontPromise = null;
 
@@ -444,6 +380,75 @@
       }
     }
 
+    // ---------- SIMPLE SUIT NORMALISATION ----------
+
+    function cleanText(str) {
+      if (!str) return "";
+      let s = String(str);
+
+      // handle your shorthand codes (&c, &e, &f, &`) with or without ;
+      s = s
+        .replace(/&`;/gi, "♠").replace(/&`/gi, "♠")
+        .replace(/&c;/gi, "♣").replace(/&c/gi, "♣")
+        .replace(/&e;/gi, "♦").replace(/&e/gi, "♦")
+        .replace(/&f;/gi, "♥").replace(/&f/gi, "♥");
+
+      // numeric HTML entities
+      s = s.replace(/&#9824;|&spades;?/gi, "♠");
+      s = s.replace(/&#9827;|&clubs;?/gi,  "♣");
+      s = s.replace(/&#9830;|&diams;?|&diamonds;?/gi, "♦");
+      s = s.replace(/&#9829;|&hearts;?/gi, "♥");
+
+      return s;
+    }
+
+    function getData() {
+      const data = {};
+      fields.forEach(f => data[f] = cleanText($(f).value.trim()));
+      return data;
+    }
+
+    function validateRequired() {
+      const d = getData();
+      const ok = d.playerName && d.playerNumber &&
+                 d.partnerName && d.partnerNumber &&
+                 d.biddingDescription;
+      saveBtn.disabled = !ok;
+      publishBtn.disabled = !ok;
+    }
+
+    fields.forEach(f => {
+      $(f).addEventListener("input", () => {
+        validateRequired();
+        statusEl.textContent = "";
+      });
+    });
+
+    // NEW storage key so old &c/&e/&f/&` values are ignored
+    const STORAGE_KEY = "ebuSystemCardPage1_v3";
+
+    (function restore() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) { validateRequired(); return; }
+        const data = JSON.parse(raw);
+        fields.forEach(f => {
+          if (data[f] !== undefined) $(f).value = data[f];
+        });
+      } catch (_) {}
+      validateRequired();
+    })();
+
+    saveBtn.addEventListener("click", () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getData()));
+      statusEl.textContent = "Saved. (Next step: page 2 builder.)";
+      setTimeout(() => statusEl.textContent = "", 3000);
+    });
+
+    publishBtn.addEventListener("click", async () => {
+      await generatePdf(getData());
+    });
+
     // ---------- PDF GENERATION ----------
 
     async function generatePdf(data) {
@@ -471,12 +476,15 @@
       doc.save("ebu-system-card.pdf");
     }
 
+    // ---------- DRAWING HELPERS ----------
+
     function setFontRegular(doc, size) {
       doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "normal");
       doc.setFontSize(size);
     }
     function setFontBold(doc, size) {
-      doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "bold");
+      if (fontLoaded) doc.setFont("NotoSans", "bold");
+      else doc.setFont("helvetica", "bold");
       doc.setFontSize(size);
     }
 
@@ -516,7 +524,7 @@
       const innerPad = 6;
       let cursorY = y + innerPad;
 
-      // Top name area
+      // top name area
       const topH = 45;
       doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, topH);
@@ -697,7 +705,6 @@
       drawCenteredText(doc, "PAGE 3 – to be defined", x + w / 2, y + h / 2, 12, true);
     }
 
-    // Page 4: notes (bottom of panel)
     function drawPage4(doc, x, y, w, h, d) {
       drawFrame(doc, x, y, w, h);
       const innerPad = 8;
