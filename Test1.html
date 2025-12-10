@@ -1,0 +1,773 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.2">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Courier; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Courier; -webkit-text-stroke: #000000; min-height: 16.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;title&gt;EBU System Card – Page 1 Builder V0.0.1&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"&gt;&lt;/script&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;style&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>body {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin: 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding: 20px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background: #f5f5f5;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>h1 {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top: 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size: 1.6rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>text-align: center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.container {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>max-width: 1100px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin: 0 auto;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background: #fff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding: 20px 24px 24px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius: 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: 0 4px 10px rgba(0,0,0,0.08);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>h2 {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size: 1.1rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top: 18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-bottom: 1px solid #ddd;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding-bottom: 4px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>h3 {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size: 1rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top: 14px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-bottom: 6px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.grid-2 {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display: grid;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>grid-template-columns: repeat(2, minmax(0,1fr));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>gap: 12px 24px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.grid-3 {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display: grid;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>grid-template-columns: repeat(3, minmax(0,1fr));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>gap: 10px 16px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.field {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display: flex;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>flex-direction: column;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top: 8px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>label {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-weight: 600;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-bottom: 4px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size: 0.92rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>input, textarea {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font: inherit;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding: 7px 9px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius: 6px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border: 1px solid #ccc;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-sizing: border-box;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>textarea {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>resize: vertical;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>min-height: 60px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.small {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size: 0.85rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color: #555;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top: 2px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.actions {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top: 18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display: flex;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>flex-wrap: wrap;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>gap: 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>justify-content: flex-end;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>align-items: center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>button {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border: none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius: 999px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding: 8px 18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font: inherit;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursor: pointer;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background: #1e88e5;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color: white;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-weight: 600;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>transition: transform 0.05s ease, box-shadow 0.05s ease, opacity 0.2s;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: 0 2px 6px rgba(0,0,0,0.18);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>button.secondary {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background: #e0e0e0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color: #333;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>button:disabled {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>opacity: 0.5;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursor: not-allowed;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>button:not(:disabled):hover {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>transform: translateY(-1px);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: 0 4px 12px rgba(0,0,0,0.2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.status {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size: 0.85rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color: #388e3c;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>min-height: 1.2em;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>@media (max-width: 800px) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.grid-2, .grid-3 {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>grid-template-columns: 1fr;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div class="container"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h1&gt;EBU System Card – Page 1 Builder&lt;/h1&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- HEADER --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Header&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grid-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="playerName"&gt;Your name&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;input id="playerName" type="text" value="Espen Gisvold" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="playerNumber"&gt;Your EBU number&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;input id="playerNumber" type="text" value="491316" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="partnerName"&gt;Partner's name&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;input id="partnerName" type="text" value="Svein Erik Dahl" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="partnerNumber"&gt;Partner's EBU number&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;input id="partnerNumber" type="text" value="525143" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;label for="biddingDescription"&gt;General description of bidding methods&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;textarea id="biddingDescription"&gt;2 over 1 GF, 5♠,4♥,4♦,3♣ &amp;amp; 15–17 NT&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- 1NT OPENINGS --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;1NT Openings and Responses&lt;/h2&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grid-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="ntStrength"&gt;1NT strength&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;input id="ntStrength" type="text" value="15–17" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="ntStrengthArtificial"&gt;If artificial – details&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="ntStrengthArtificial"&gt;&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="ntShape"&gt;Shape constraints&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="ntShape"&gt;No singleton or void. No 6-card major or 7-card minor&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="ntShapeArtificial"&gt;If may have singleton – details&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="ntShapeArtificial"&gt;May contain singleton Ace or King&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Responses to 1NT&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grid-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="nt2c"&gt;2♣ – meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="nt2c"&gt;Stayman, may be weak, may take to minor&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="nt2d"&gt;2♦ – meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="nt2d"&gt;Transfer to ♥ (break xx)&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="nt2h"&gt;2♥ – meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="nt2h"&gt;Transfer to ♠ (break xx)&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="nt2s"&gt;2♠ – meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="nt2s"&gt;Minor-suit Stayman: 2NT = 3–3, 3♣/3♦ = longer minor&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="nt2nt"&gt;2NT – meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="nt2nt"&gt;Transfer to ♣&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="ntOthers"&gt;Other 1NT responses&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="ntOthers"&gt;3♣ – transfer to ♦; 3♦ = 4-4-4-1 with a major; 3♥/3♠ = that major + 4/5 minors&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grid-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="afterDouble"&gt;Action after opponents double&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="afterDouble"&gt;Redouble = to play; all two-level bids are transfers (escape system)&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="afterInterference"&gt;Action after other interference&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="afterInterference"&gt;Lebensohl; double shows values. Transfer over 2♣/2♦ natural; penalties over 2♥/2♠&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- TWO-LEVEL OPENINGS --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Two-level openings and responses&lt;/h2&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="field small"&gt;“Notes” column on page 1 shows a note number; the actual text appears on page 4.&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;2♣&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grid-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoCMeaning"&gt;Meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoCMeaning"&gt;23+ balanced or 9+ tricks. 2♦ weak/waiting; positive = 8+ with a good suit.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoCResponses"&gt;Responses&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoCResponses"&gt;2♦ waiting, strong or weak; 2M = strong 6-card suit. After 2♣–2♦, 2NT/3♣ = puppet Stayman.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoCNotes"&gt;Note text (note 1)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoCNotes"&gt;&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;2♦&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grid-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoDMeaning"&gt;Meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoDMeaning"&gt;Multi: weak 2♥/2♠ or 20–22 balanced.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoDResponses"&gt;Responses&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoDResponses"&gt;2♥/2♠: pass or correct. 2NT relay; 3♣ = ♥ minimum; 3♠ = ♥ maximum etc.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoDNotes"&gt;Note text (note 2)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoDNotes"&gt;&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;2♥&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grid-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoHMeaning"&gt;Meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoHMeaning"&gt;5♥ and 4+ in another suit.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoHResponses"&gt;Responses&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoHResponses"&gt;2NT enquiry; 3♦ = major-suit invite.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoHNotes"&gt;Note text (note 3)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoHNotes"&gt;&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;2♠&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grid-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoSMeaning"&gt;Meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoSMeaning"&gt;5♠ and 4+ in ♣/♦.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoSResponses"&gt;Responses&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoSResponses"&gt;2NT enquiry; 3♦ = major-suit invite.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoSNotes"&gt;Note text (note 4)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoSNotes"&gt;&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h3&gt;2NT&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grid-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoNTMeaning"&gt;Meaning&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoNTMeaning"&gt;Both minors, 5-5 in principle.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoNTResponses"&gt;Responses&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoNTResponses"&gt;&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label for="twoNTNotes"&gt;Note text (note 5)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;textarea id="twoNTNotes"&gt;&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- OTHER ASPECTS --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Other aspects of system which opponents should note&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="field"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;textarea id="otherAspects"&gt;Over 1-of-a-suit: 1NT = highest &amp;amp; lowest unbid suits; 2♣ = two lowest unbid suits; 2♦ = two highest unbid suits. Length 4+/4+. 6 HCP+ non-vul, 8+ vul; with 5-5, bid one level higher.&lt;/textarea&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- ACTIONS --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="actions"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;span id="status" class="status"&gt;&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;button id="saveBtn" class="secondary" disabled&gt;Save and continue&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;button id="publishBtn" disabled&gt;Publish PDF (4-page card layout)&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;script&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const $ = id =&gt; document.getElementById(id);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const fields = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"playerName","playerNumber","partnerName","partnerNumber",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"biddingDescription","ntStrength","ntStrengthArtificial",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"ntShape","ntShapeArtificial","nt2c","nt2d","nt2h","nt2s",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"nt2nt","ntOthers","afterDouble","afterInterference",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"twoCMeaning","twoCResponses","twoCNotes",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"twoDMeaning","twoDResponses","twoDNotes",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"twoHMeaning","twoHResponses","twoHNotes",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"twoSMeaning","twoSResponses","twoSNotes",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"twoNTMeaning","twoNTResponses","twoNTNotes",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>"otherAspects"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const statusEl = $("status");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const saveBtn = $("saveBtn");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const publishBtn = $("publishBtn");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// --- NORMALISE SUIT SYMBOLS ------------------------------------</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function normaliseSuits(str) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (!str) return "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>return String(str)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// shorthand codes from your original card</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.replace(/&amp;`/g,<span class="Apple-converted-space">  </span>"♠")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.replace(/&amp;c/gi, "♣")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.replace(/&amp;e/gi, "♦")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.replace(/&amp;f/gi, "♥")</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// numeric / named HTML entities, just in case</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.replace(/&amp;#9824;|&amp;spades;?/gi, <span class="Apple-converted-space">          </span>"♠")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.replace(/&amp;#9827;|&amp;clubs;?/gi,<span class="Apple-converted-space">            </span>"♣")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.replace(/&amp;#9830;|&amp;diams;?|&amp;diamonds;?/gi,"♦")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.replace(/&amp;#9829;|&amp;hearts;?/gi, <span class="Apple-converted-space">          </span>"♥");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function getData() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const data = {};</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>fields.forEach(f =&gt; data[f] = normaliseSuits($(f).value.trim()));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>return data;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function validateRequired() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const d = getData();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const ok = d.playerName &amp;&amp; d.playerNumber &amp;&amp;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                 </span>d.partnerName &amp;&amp; d.partnerNumber &amp;&amp;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                 </span>d.biddingDescription;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>saveBtn.disabled = !ok;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>publishBtn.disabled = !ok;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>fields.forEach(f =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>$(f).addEventListener("input", () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>validateRequired();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>statusEl.textContent = "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// simple storage key (fresh)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const STORAGE_KEY = "ebuSystemCardPage1_v5";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>(function restore() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>try {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const raw = localStorage.getItem(STORAGE_KEY);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>if (!raw) { validateRequired(); return; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const data = JSON.parse(raw);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>fields.forEach(f =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>if (data[f] !== undefined) $(f).value = data[f];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>} catch (_) {}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>validateRequired();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>})();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>saveBtn.addEventListener("click", () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>localStorage.setItem(STORAGE_KEY, JSON.stringify(getData()));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>statusEl.textContent = "Saved. (Next step: page 2 builder.)";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; statusEl.textContent = "", 3000);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>publishBtn.addEventListener("click", async () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>await generatePdf(getData());</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// ---------- FONT LOADING (Noto Sans for Unicode suits) ----------</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>let fontLoaded = false;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>let fontPromise = null;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>async function ensureFont(doc) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (fontLoaded) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.setFont("NotoSans", "normal");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (!fontPromise) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const regularUrl = "https://fonts.gstatic.com/s/notosans/v27/o-0FIpksx3YVZb_r2wZP.ttf";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const boldUrl<span class="Apple-converted-space">    </span>= "https://fonts.gstatic.com/s/notosans/v27/o-0NIpksx3YVZbWx3zrQ9.ttf";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>fontPromise = Promise.all([</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>fetch(regularUrl).then(r =&gt; r.arrayBuffer()),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>fetch(boldUrl).then(r =&gt; r.arrayBuffer())</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>]).then(([regBuf, boldBuf]) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>function toBase64(buf) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const bytes = new Uint8Array(buf);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>let binary = "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; bytes.length; i++) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>binary += String.fromCharCode(bytes[i]);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>return btoa(binary);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const regB64 = toBase64(regBuf);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const boldB64 = toBase64(boldBuf);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>doc.addFileToVFS("NotoSans-Regular.ttf", regB64);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>doc.addFileToVFS("NotoSans-Bold.ttf", boldB64);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>doc.addFont("NotoSans-Bold.ttf", "NotoSans", "bold");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>fontLoaded = true;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}).catch(err =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>console.error("Font load failed; falling back to built-in font.", err);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>await fontPromise;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (fontLoaded) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.setFont("NotoSans", "normal");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.setFont("helvetica", "normal");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// ---------- PDF GENERATION ----------</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>async function generatePdf(data) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const { jsPDF } = window.jspdf;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>await ensureFont(doc);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const pageW = doc.internal.pageSize.getWidth();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const pageH = doc.internal.pageSize.getHeight();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const margin = 24;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const gap = 12;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const panelW = (pageW - 2 * margin - gap) / 2;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const panelH = pageH - 2 * margin;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// SHEET 1: Page 4 (left) + Page 1 (right)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawPage4(doc, margin, margin, panelW, panelH, data);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawPage1(doc, margin + panelW + gap, margin, panelW, panelH, data);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// SHEET 2: Page 2 (left) + Page 3 (right)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.addPage();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawPage2(doc, margin, margin, panelW, panelH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawPage3(doc, margin + panelW + gap, margin, panelW, panelH);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.save("ebu-system-card.pdf");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function setFontRegular(doc, size) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "normal");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setFontSize(size);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function setFontBold(doc, size) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "bold");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setFontSize(size);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function drawFrame(doc, x, y, w, h) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setLineWidth(1.0);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.rect(x, y, w, h);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function drawCenteredText(doc, text, x, y, size, bold = false) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (bold) setFontBold(doc, size); else setFontRegular(doc, size);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text(text, x, y, { align: "center" });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function drawHeaderRow(doc, x, y, w, h, text, size = 9) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setLineWidth(0.6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.rect(x, y, w, h);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawCenteredText(doc, text, x + w / 2, y + h / 2 + 3, size, true);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function drawLabelCell(doc, x, y, w, h, label, text) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setLineWidth(0.4);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.rect(x, y, w, h);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontBold(doc, 7.5);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const labelLines = doc.splitTextToSize(label || "", w - 6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text(labelLines, x + 3, y + 9);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const bodyStartY = y + 9 + labelLines.length * 8 + 2;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontRegular(doc, 7);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const body = doc.splitTextToSize(text || "", w - 6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text(body, x + 3, bodyStartY);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function drawPage1(doc, x, y, w, h, d) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawFrame(doc, x, y, w, h);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const innerPad = 6;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>let cursorY = y + innerPad;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Top name area</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const topH = 45;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setLineWidth(0.6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.rect(x + innerPad, cursorY, w - 2 * innerPad, topH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const leftX = x + innerPad + 6;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const rightX = x + w - innerPad - 6;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontBold(doc, 9.5);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text("Name", leftX, cursorY + 14);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text("Partner", leftX, cursorY + 32);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontRegular(doc, 9);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text(d.playerName || "", leftX + 45, cursorY + 14);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text(d.partnerName || "", leftX + 45, cursorY + 32);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontBold(doc, 9);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text("EBU No. " + (d.playerNumber || ""), rightX, cursorY + 14, { align: "right" });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text("EBU No. " + (d.partnerNumber || ""), rightX, cursorY + 32, { align: "right" });</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += topH + 4;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// General description header</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 20,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"GENERAL DESCRIPTION OF BIDDING METHODS", 9);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += 20;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Description line</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setLineWidth(0.6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const descH = 22;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.rect(x + innerPad, cursorY, w - 2 * innerPad, descH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontBold(doc, 8.5);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const descLines = doc.splitTextToSize(d.biddingDescription || "", w - 2 * innerPad - 8);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text(descLines, x + w / 2, cursorY + 14, { align: "center" });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += descH + 3;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// 1NT Openings header</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"1NT OPENINGS AND RESPONSES", 9);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += 18 + 1;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Strength &amp; Shape rows</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const rowH = 32;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const colLabelW = 80;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const colMainW = 150;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const colRestW = (w - 2 * innerPad) - colLabelW - colMainW;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad, cursorY, colLabelW, rowH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"Strength", d.ntStrength || "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad + colLabelW, cursorY, colMainW, rowH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"", "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad + colLabelW + colMainW, cursorY, colRestW, rowH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"If artificial – details", d.ntStrengthArtificial || "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += rowH;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad, cursorY, colLabelW, rowH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"Shape constraints", "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad + colLabelW, cursorY, colMainW, rowH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"", d.ntShape || "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad + colLabelW + colMainW, cursorY, colRestW, rowH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"If may have singleton – details", d.ntShapeArtificial || "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += rowH + 3;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Responses heading</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const respHeadH = 16;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setLineWidth(0.4);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.rect(x + innerPad, cursorY, w - 2 * innerPad, respHeadH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontBold(doc, 8);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text("Responses", x + innerPad + 3, cursorY + 11);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += respHeadH;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Responses grid</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const respRowH = 26;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const halfW = (w - 2 * innerPad) / 2;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>function respRow(label1, text1, label2, text2) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.setLineWidth(0.4);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.rect(x + innerPad, cursorY, halfW, respRowH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.rect(x + innerPad + halfW, cursorY, halfW, respRowH);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setFontBold(doc, 8);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(label1, x + innerPad + 3, cursorY + 10);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(label2, x + innerPad + halfW + 3, cursorY + 10);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setFontRegular(doc, 7);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const t1 = doc.splitTextToSize(text1 || "", halfW - 6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const t2 = doc.splitTextToSize(text2 || "", halfW - 6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(t1, x + innerPad + 3, cursorY + 18);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(t2, x + innerPad + halfW + 3, cursorY + 18);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>cursorY += respRowH;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>respRow("2♣", d.nt2c, "2♦", d.nt2d);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>respRow("2♥", d.nt2h, "2♠", d.nt2s);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>respRow("2NT", d.nt2nt, "Others", d.ntOthers);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const actH = 26;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad, cursorY, colLabelW, actH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"Action after opponents double", "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad + colLabelW, cursorY,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>(w - 2 * innerPad) - colLabelW, actH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"", d.afterDouble || "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += actH;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad, cursorY, colLabelW, actH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"Action after other interference", "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawLabelCell(doc, x + innerPad + colLabelW, cursorY,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>(w - 2 * innerPad) - colLabelW, actH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"", d.afterInterference || "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += actH + 4;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Two-level openings header</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"TWO-LEVEL OPENINGS AND RESPONSES", 9);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += 18;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Table header</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const headerH = 16;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const col1 = 32;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const col2 = 165;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const col3 = 165;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const col4 = (w - 2 * innerPad) - (col1 + col2 + col3);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setLineWidth(0.4);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.rect(x + innerPad, cursorY, w - 2 * innerPad, headerH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontBold(doc, 8);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text("Meaning", x + innerPad + col1 + 4, cursorY + 11);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text("Responses", x + innerPad + col1 + col2 + 4, cursorY + 11);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text("Notes", x + innerPad + col1 + col2 + col3 + 4, cursorY + 11);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += headerH;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>function openingRow(label, m, r, noteText, noteIndex) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const rowH = 26;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.rect(x + innerPad, cursorY, col1, rowH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.rect(x + innerPad + col1, cursorY, col2, rowH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.rect(x + innerPad + col1 + col2, cursorY, col3, rowH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.rect(x + innerPad + col1 + col2 + col3, cursorY, col4, rowH);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setFontBold(doc, 9);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(label, x + innerPad + 4, cursorY + 16);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setFontRegular(doc, 7);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const tm = doc.splitTextToSize(m || "", col2 - 6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const tr = doc.splitTextToSize(r || "", col3 - 6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const displayNote = (noteText &amp;&amp; noteText.length &gt; 0) ? String(noteIndex) : "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const tn = doc.splitTextToSize(displayNote, col4 - 6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(tm, x + innerPad + col1 + 3, cursorY + 11);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(tr, x + innerPad + col1 + col2 + 3, cursorY + 11);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(tn, x + innerPad + col1 + col2 + col3 + 3, cursorY + 16);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>cursorY += rowH;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>openingRow("2♣", d.twoCMeaning, d.twoCResponses, d.twoCNotes, 1);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>openingRow("2♦", d.twoDMeaning, d.twoDResponses, d.twoDNotes, 2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>openingRow("2♥", d.twoHMeaning, d.twoHResponses, d.twoHNotes, 3);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>openingRow("2♠", d.twoSMeaning, d.twoSResponses, d.twoSNotes, 4);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>openingRow("2NT", d.twoNTMeaning, d.twoNTResponses, d.twoNTNotes, 5);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += 3;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>// Other aspects</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"OTHER ASPECTS OF SYSTEM WHICH OPPONENTS SHOULD NOTE", 9);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cursorY += 18;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const restH = y + h - cursorY - innerPad;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.setLineWidth(0.4);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.rect(x + innerPad, cursorY, w - 2 * innerPad, restH);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontRegular(doc, 7);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const otherLines = doc.splitTextToSize(d.otherAspects || "", w - 2 * innerPad - 6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>doc.text(otherLines, x + innerPad + 3, cursorY + 11);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function drawPage2(doc, x, y, w, h) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawFrame(doc, x, y, w, h);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawCenteredText(doc, "PAGE 2 – to be defined", x + w / 2, y + h / 2, 12, true);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function drawPage3(doc, x, y, w, h) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawFrame(doc, x, y, w, h);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawCenteredText(doc, "PAGE 3 – to be defined", x + w / 2, y + h / 2, 12, true);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Page 4: notes (bottom of panel)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>function drawPage4(doc, x, y, w, h, d) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawFrame(doc, x, y, w, h);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const innerPad = 8;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const headerH = 24;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>drawHeaderRow(doc, x + innerPad, y + innerPad,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>w - 2 * innerPad, headerH,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"SYSTEM NOTES (from page 1)", 10);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFontRegular(doc, 8);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const notesData = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{ n: 1, text: d.twoCNotes },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{ n: 2, text: d.twoDNotes },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{ n: 3, text: d.twoHNotes },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{ n: 4, text: d.twoSNotes },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{ n: 5, text: d.twoNTNotes }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const maxWidth = w - 2 * innerPad - 6;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const lineHeight = 10;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const gap = 4;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const rendered = [];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>notesData.forEach(note =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>if (!note.text || note.text.trim().length === 0) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const prefix = note.n + ". ";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const lines = doc.splitTextToSize(prefix + note.text, maxWidth);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>rendered.push({ lines });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (rendered.length === 0) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const msg = "No notes defined yet.";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const startY = y + h - innerPad - lineHeight;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(msg, x + innerPad + 3, startY);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>let totalHeight = 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>rendered.forEach(r =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>totalHeight += r.lines.length * lineHeight + gap;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const minY = y + innerPad + headerH + 10;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>let startY = y + h - innerPad - totalHeight;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (startY &lt; minY) startY = minY;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>let cursorY = startY;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>rendered.forEach(r =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>doc.text(r.lines, x + innerPad + 3, cursorY);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>cursorY += r.lines.length * lineHeight + gap;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+</body>
+</html>
