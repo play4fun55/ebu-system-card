@@ -437,7 +437,7 @@ function decodeHtmlEntities(str) {
 
     (function restore() {
       try {
-        const raw = localStorage.getItem("ebuSystemCardPage1");
+       const raw = localStorage.getItem("ebuSystemCardPage1_v2");
         if (!raw) { validateRequired(); return; }
         const data = JSON.parse(raw);
         fields.forEach(f => {
@@ -448,7 +448,7 @@ function decodeHtmlEntities(str) {
     })();
 
     saveBtn.addEventListener("click", () => {
-      localStorage.setItem("ebuSystemCardPage1", JSON.stringify(getData()));
+     localStorage.setItem("ebuSystemCardPage1_v2", JSON.stringify(getData()));
       statusEl.textContent = "Saved. (Next step: page 2 builder.)";
       setTimeout(() => statusEl.textContent = "", 3000);
     });
