@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EBU System Card – Page 1 Builder V0.1.0.4</title>
+  <title>EBU System Card – Page 1 Builder V0.2.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -121,7 +121,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>EBU System Card – Page 1 Builder V0.1.0.4</h1>
+    <h1>EBU System Card – Page 1 Builder V0.2.0</h1>
 
     <!-- HEADER -->
     <h2>Header</h2>
@@ -146,7 +146,7 @@
 
     <div class="field">
       <label for="biddingDescription">General description of bidding methods</label>
-      <textarea id="biddingDescription">2 over 1 GF, 5♠,4♥,4♦,3♣ &amp; 15–17 NT</textarea>
+      <textarea id="biddingDescription">2 over 1 GF, 5S,4H,4D,3C &amp; 15–17 NT</textarea>
     </div>
 
     <!-- 1NT OPENINGS -->
@@ -299,7 +299,7 @@
     <!-- OTHER ASPECTS -->
     <h2>Other aspects of system which opponents should note</h2>
     <div class="field">
-      <textarea id="otherAspects">Over 1-of-a-suit: 1NT = highest &amp; lowest unbid suits; 2♣ = two lowest unbid suits; 2♦ = two highest unbid suits. Length 4+/4+. 6 HCP+ non-vul, 8+ vul; with 5-5, bid one level higher.</textarea>
+      <textarea id="otherAspects">Over 1-of-a-suit: 1NT = highest & lowest unbid suits; 2C = two lowest unbid suits; 2D = two highest unbid suits. Length 4+/4+. 6 HCP+ non-vul, 8+ vul; with 5-5, bid one level higher.</textarea>
     </div>
 
     <!-- ACTIONS -->
@@ -330,23 +330,23 @@
     const saveBtn = $("saveBtn");
     const publishBtn = $("publishBtn");
 
-    // ---------- SUIT NORMALISATION ----------
+    // ---------- SUIT NORMALISATION (only for input text) ----------
     function cleanText(str) {
       if (!str) return "";
       let s = String(str);
 
-      // special shorthand from original card
+      // legacy shorthand from EBU card copier
       s = s
-        .replace(/&`;/gi, "♠").replace(/&`/gi, "♠")
-        .replace(/&c;/gi, "♣").replace(/&c/gi, "♣")
-        .replace(/&e;/gi, "♦").replace(/&e/gi, "♦")
-        .replace(/&f;/gi, "♥").replace(/&f/gi, "♥");
+        .replace(/&`;/gi, "S").replace(/&`/gi, "S")
+        .replace(/&c;/gi, "C").replace(/&c/gi, "C")
+        .replace(/&e;/gi, "D").replace(/&e/gi, "D")
+        .replace(/&f;/gi, "H").replace(/&f/gi, "H");
 
-      // numeric / named entities
-      s = s.replace(/&#9824;|&spades;?/gi, "♠");
-      s = s.replace(/&#9827;|&clubs;?/gi,  "♣");
-      s = s.replace(/&#9830;|&diams;?|&diamonds;?/gi, "♦");
-      s = s.replace(/&#9829;|&hearts;?/gi, "♥");
+      // numeric / named entities just in case
+      s = s.replace(/&#9824;|&spades;?/gi, "S");
+      s = s.replace(/&#9827;|&clubs;?/gi,  "C");
+      s = s.replace(/&#9830;|&diams;?|&diamonds;?/gi, "D");
+      s = s.replace(/&#9829;|&hearts;?/gi, "H");
 
       return s;
     }
@@ -386,7 +386,7 @@
       });
     });
 
-    const STORAGE_KEY = "ebuSystemCardPage1_v10";
+    const STORAGE_KEY = "ebuSystemCardPage1_v20";
 
     (function restore() {
       try {
@@ -412,62 +412,10 @@
       await generatePdf(getData());
     });
 
-    // ---------- FONT LOADING FOR PDF ----------
-    let fontLoaded = false;
-    let fontPromise = null;
-
-    async function ensureFont(doc) {
-      if (fontLoaded) {
-        doc.setFont("NotoSans", "normal");
-        return;
-      }
-      if (!fontPromise) {
-        const regularUrl = "https://fonts.gstatic.com/s/notosans/v27/o-0FIpksx3YVZb_r2wZP.ttf";
-        const boldUrl    = "https://fonts.gstatic.com/s/notosans/v27/o-0NIpksx3YVZbWx3zrQ9.ttf";
-
-        fontPromise = Promise.all([
-          fetch(regularUrl).then(r => r.arrayBuffer()),
-          fetch(boldUrl).then(r => r.arrayBuffer())
-        ]).then(([regBuf, boldBuf]) => {
-          function toBase64(buf) {
-            const bytes = new Uint8Array(buf);
-            let binary = "";
-            for (let i = 0; i < bytes.length; i++) {
-              binary += String.fromCharCode(bytes[i]);
-            }
-            return btoa(binary);
-          }
-          const regB64 = toBase64(regBuf);
-          const boldB64 = toBase64(boldBuf);
-
-          doc.addFileToVFS("NotoSans-Regular.ttf", regB64);
-          doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
-
-          doc.addFileToVFS("NotoSans-Bold.ttf", boldB64);
-          doc.addFont("NotoSans-Bold.ttf", "NotoSans", "bold");
-
-          fontLoaded = true;
-        }).catch(err => {
-          console.error("Font load failed; falling back to built-in font.", err);
-        });
-      }
-
-      await fontPromise;
-
-      if (fontLoaded) {
-        doc.setFont("NotoSans", "normal");
-      } else {
-        doc.setFont("helvetica", "normal");
-      }
-    }
-
-    // ---------- PDF GENERATION & DRAWING ----------
-
+    // ---------- PDF GENERATION (helvetica only, no Unicode fun) ----------
     async function generatePdf(data) {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
-
-      await ensureFont(doc);
 
       const pageW = doc.internal.pageSize.getWidth();
       const pageH = doc.internal.pageSize.getHeight();
@@ -487,11 +435,11 @@
     }
 
     function setFontRegular(doc, size) {
-      doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "normal");
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(size);
     }
     function setFontBold(doc, size) {
-      doc.setFont(fontLoaded ? "NotoSans" : "helvetica", "bold");
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(size);
     }
 
@@ -555,8 +503,8 @@
         "GENERAL DESCRIPTION OF BIDDING METHODS", 9);
       cursorY += 20;
 
-      doc.setLineWidth(0.6);
       const descH = 22;
+      doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, descH);
       setFontBold(doc, 8.5);
       const descLines = doc.splitTextToSize(d.biddingDescription || "", w - 2 * innerPad - 8);
@@ -615,8 +563,9 @@
         cursorY += respRowH;
       }
 
-      respRow("2♣", d.nt2c, "2♦", d.nt2d);
-      respRow("2♥", d.nt2h, "2♠", d.nt2s);
+      // NOTE: STATIC LABELS NOW PURE ASCII: 2C, 2D, 2H, 2S, 2NT, Others
+      respRow("2C", d.nt2c, "2D", d.nt2d);
+      respRow("2H", d.nt2h, "2S", d.nt2s);
       respRow("2NT", d.nt2nt, "Others", d.ntOthers);
 
       const actH = 26;
@@ -673,10 +622,11 @@
         cursorY += rowH;
       }
 
-      openingRow("2♣", d.twoCMeaning, d.twoCResponses, d.twoCNotes, 1);
-      openingRow("2♦", d.twoDMeaning, d.twoDResponses, d.twoDNotes, 2);
-      openingRow("2♥", d.twoHMeaning, d.twoHResponses, d.twoHNotes, 3);
-      openingRow("2♠", d.twoSMeaning, d.twoSResponses, d.twoSNotes, 4);
+      // NOTE: STATIC LABELS HERE ALSO PURE ASCII
+      openingRow("2C", d.twoCMeaning, d.twoCResponses, d.twoCNotes, 1);
+      openingRow("2D", d.twoDMeaning, d.twoDResponses, d.twoDNotes, 2);
+      openingRow("2H", d.twoHMeaning, d.twoHResponses, d.twoHNotes, 3);
+      openingRow("2S", d.twoSMeaning, d.twoSResponses, d.twoSNotes, 4);
       openingRow("2NT", d.twoNTMeaning, d.twoNTResponses, d.twoNTNotes, 5);
 
       cursorY += 3;
