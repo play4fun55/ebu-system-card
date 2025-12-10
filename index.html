@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EBU System Card – Page 1 Builder V0.4.1</title>
+  <title>EBU System Card – Page 1 Builder V0.4.2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -126,7 +126,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>EBU System Card – Page 1 Builder V0.4.1</h1>
+    <h1>EBU System Card – Page 1 Builder V0.4.2</h1>
 
     <!-- HEADER -->
     <h2>Header</h2>
@@ -337,6 +337,15 @@
     const publishBtn = $("publishBtn");
     const clearBtn = $("clearBtn");
 
+    // ---------- DEFAULT DATA (used when field left empty) ----------
+    const defaultData = {
+      ntStrength: "15–17",
+      ntShape: "No singleton or void. No 6-card major or 7-card minor",
+      ntShapeArtificial: "May contain singleton Ace or King",
+      afterDouble: "Redouble = to play; all two-level bids are transfers (escape system)",
+      afterInterference: "Lebensohl; double shows values. Transfer over 2C/2D natural; penalties over 2H/2S"
+    };
+
     // ---------- COOKIE HELPERS ----------
     const COOKIE_NAME = "ebuSystemCardPage1";
 
@@ -397,7 +406,14 @@
 
     function getData() {
       const data = {};
-      fields.forEach(f => data[f] = cleanText($(f).value.trim()));
+      fields.forEach(f => {
+        let v = cleanText($(f).value.trim());
+        // if empty but we have a default, use default
+        if (!v && Object.prototype.hasOwnProperty.call(defaultData, f)) {
+          v = defaultData[f];
+        }
+        data[f] = v;
+      });
       return data;
     }
 
@@ -551,7 +567,6 @@
       const bodyTop = curY + 2;
       const bodyH = y + h - 3 - bodyTop;
       if (bodyH > 4 && text) {
-        // slightly larger base for readability
         drawFittedText(doc, text, x, bodyTop, w, bodyH, 8, 5.5, "left", false);
       }
     }
@@ -585,7 +600,7 @@
       const innerPad = 6;
       let cursorY = y + innerPad;
 
-      // Top name area (slightly shorter)
+      // Top name area
       const topH = 40;
       doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, topH);
@@ -611,7 +626,7 @@
         "GENERAL DESCRIPTION OF BIDDING METHODS", 9);
       cursorY += 16;
 
-      // Description line with dynamic font (slightly smaller box)
+      // Description line
       const descH = 18;
       doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, descH);
@@ -619,31 +634,28 @@
         x + innerPad, cursorY, w - 2 * innerPad, descH, 8.5, 6, "center", true);
       cursorY += descH + 3;
 
-      // 1NT Openings header (slightly shorter)
+      // 1NT header
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
         "1NT OPENINGS AND RESPONSES", 9);
       cursorY += 16 + 1;
 
-      // --- Strength & Shape rows: 2 columns only, label + text in same cell ---
-      // Reduced row height
+      // Strength & shape rows
       const rowH = 28;
       const twoColW = (w - 2 * innerPad) / 2;
 
-      // Row 1: Strength / If artificial
       drawLabelCell(doc, x + innerPad, cursorY, twoColW, rowH,
         "Strength", d.ntStrength || "");
       drawLabelCell(doc, x + innerPad + twoColW, cursorY, twoColW, rowH,
         "If artificial – details", d.ntStrengthArtificial || "");
       cursorY += rowH;
 
-      // Row 2: Shape constraints / If may have singleton
       drawLabelCell(doc, x + innerPad, cursorY, twoColW, rowH,
         "Shape constraints", d.ntShape || "");
       drawLabelCell(doc, x + innerPad + twoColW, cursorY, twoColW, rowH,
         "If may have singleton – details", d.ntShapeArtificial || "");
       cursorY += rowH + 3;
 
-      // Responses heading (shorter)
+      // Responses heading
       const respHeadH = 12;
       doc.setLineWidth(0.4);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, respHeadH);
@@ -651,8 +663,7 @@
       doc.text("Responses", x + innerPad + 3, cursorY + 9);
       cursorY += respHeadH;
 
-      // Responses grid (labels + text on same line block)
-      // Slightly shorter rows & larger base font for readability
+      // Responses rows
       const respRowH = 20;
       const halfW = (w - 2 * innerPad) / 2;
 
@@ -674,7 +685,7 @@
       respRow("2H", d.nt2h, "2S", d.nt2s);
       respRow("2NT", d.nt2nt, "Others", d.ntOthers);
 
-      // Action rows – slightly shorter
+      // Actions
       const actH = 24;
       drawLabelCell(doc, x + innerPad, cursorY, 90, actH,
         "Action after opponents double", "");
@@ -690,12 +701,12 @@
         "", d.afterInterference || "");
       cursorY += actH + 4;
 
-      // Two-level openings header – a bit shorter
+      // Two-level openings header
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
         "TWO-LEVEL OPENINGS AND RESPONSES", 9);
       cursorY += 16;
 
-      // Table header – slightly shorter
+      // Table header
       const headerH = 14;
       const col1 = 32;
       const col2 = 165;
@@ -711,22 +722,18 @@
       cursorY += headerH;
 
       function openingRow(label, m, r, noteText, noteIndex) {
-        // Reduced row height from 30 -> 24
         const rowH = 24;
         doc.rect(x + innerPad, cursorY, col1, rowH);
         doc.rect(x + innerPad + col1, cursorY, col2, rowH);
         doc.rect(x + innerPad + col1 + col2, cursorY, col3, rowH);
         doc.rect(x + innerPad + col1 + col2 + col3, cursorY, col4, rowH);
 
-        // label cell
         setFontBold(doc, 9);
         doc.text(label, x + innerPad + 4, cursorY + 14);
 
-        // meaning
         drawFittedText(doc, m || "", x + innerPad + col1, cursorY, col2, rowH, 7, 5.5, "left", false);
-        // responses
         drawFittedText(doc, r || "", x + innerPad + col1 + col2, cursorY, col3, rowH, 7, 5.5, "left", false);
-        // notes: just the number
+
         const noteLabel = (noteText && noteText.length > 0) ? String(noteIndex) : "";
         if (noteLabel) {
           drawFittedText(doc, noteLabel, x + innerPad + col1 + col2 + col3, cursorY, col4, rowH, 8, 6, "left", true);
@@ -743,12 +750,12 @@
 
       cursorY += 3;
 
-      // Other aspects header + much larger box now
+      // Other aspects
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
         "OTHER ASPECTS OF SYSTEM WHICH OPPONENTS SHOULD NOTE", 9);
       cursorY += 18;
 
-      const restH = y + h - cursorY - innerPad; // now ~100+ pts
+      const restH = y + h - cursorY - innerPad;
       doc.setLineWidth(0.4);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, restH);
 
@@ -771,7 +778,6 @@
       const innerPad = 8;
       const headerH = 24;
 
-      // Prepare notes text
       const notesData = [
         { n: 1, text: d.twoCNotes },
         { n: 2, text: d.twoDNotes },
@@ -781,7 +787,7 @@
       ];
 
       const maxWidth = w - 2 * innerPad - 6;
-      const lineHeight = 9; // approx for 7.5pt
+      const lineHeight = 9;
       const gap = 4;
 
       const rendered = [];
@@ -792,7 +798,6 @@
         rendered.push({ lines });
       });
 
-      // If no notes – just place header at 3/4 and message
       if (rendered.length === 0) {
         const headerTop = y + h * 0.75;
         const headerX = x + innerPad;
@@ -806,13 +811,11 @@
         return;
       }
 
-      // Estimate total height needed for all notes (for panel layout)
       let totalHeight = 0;
       rendered.forEach(r => {
         totalHeight += r.lines.length * lineHeight + gap;
       });
 
-      // Header at 3/4 down the panel
       let headerTop = y + h * 0.75;
       const minHeaderTop = y + innerPad;
       const maxHeaderTop = y + h - innerPad - headerH - 40;
@@ -828,7 +831,6 @@
       const availableH = y + h - innerPad - notesStartY;
 
       if (totalHeight <= availableH) {
-        // All notes fit inside the bottom region
         setFontRegular(doc, 7.5);
         let cursorY = notesStartY + 7.5;
         rendered.forEach(r => {
@@ -836,7 +838,6 @@
           cursorY += r.lines.length * lineHeight + gap;
         });
       } else {
-        // Not enough space: put a short message and spill notes onto separate portrait page
         setFontRegular(doc, 7.5);
         doc.text(
           "System notes are printed on a separate sheet.",
@@ -844,14 +845,12 @@
           notesStartY + 10
         );
 
-        // Add separate A4 PORTRAIT page with full notes
         doc.addPage("a4", "portrait");
         const pw = doc.internal.pageSize.getWidth();
         const ph = doc.internal.pageSize.getHeight();
         const pm = 40;
         const contentW = pw - 2 * pm;
 
-        // Header at top of portrait page
         drawHeaderRow(doc, pm, pm, contentW, 30, "SYSTEM NOTES (from page 1)", 12);
 
         setFontRegular(doc, 10);
