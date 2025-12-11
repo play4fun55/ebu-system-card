@@ -509,24 +509,46 @@
     }
 
     function drawLabelCell(doc, x, y, w, h, label, text) {
-      doc.setLineWidth(0.4);
-      doc.rect(x, y, w, h);
+  doc.setLineWidth(0.4);
+  doc.rect(x, y, w, h);
 
-      setFontBold(doc, 7.5);
-      const labelLines = doc.splitTextToSize(label || "", w - 6);
-      const labelLineHeight = 7.5 * 1.2;
-      let curY = y + 3 + 7.5;
-      labelLines.forEach(ln => {
-        doc.text(ln, x + 3, curY);
-        curY += labelLineHeight;
-      });
+  // Reserve a fixed top area for the label (about 12pt tall)
+  const labelHeight = 12;
 
-      const bodyTop = curY + 2;
-      const bodyH = y + h - 3 - bodyTop;
-      if (bodyH > 4 && text) {
-        drawFittedText(doc, text, x, bodyTop, w, bodyH, 8, 5.5, "left", false);
-      }
+  // --- LABEL TEXT ---
+  setFontBold(doc, 7.5);
+  const labelLines = doc.splitTextToSize(label || "", w - 6); 
+  const lh = 7.5 * 1.2;
+
+  let curY = y + 3 + 7.5;     // starting y for label text
+  const maxLabelY = y + labelHeight;
+
+  labelLines.forEach(line => {
+    if (curY <= maxLabelY) {
+      doc.text(line, x + 3, curY);
+      curY += lh;
     }
+  });
+
+  // --- BODY TEXT ---
+  const bodyTop = y + labelHeight + 2;  
+  const bodyHeight = h - labelHeight - 4;
+
+  if (text && bodyHeight > 0) {
+    drawFittedText(
+      doc,
+      text,
+      x,            // left
+      bodyTop,      // top of body
+      w,            // width
+      bodyHeight,   // height
+      8,            // max font
+      5.5,          // min font
+      "left",
+      false
+    );
+  }
+}
 
     // ---------- PAGE DRAWING ----------
 
