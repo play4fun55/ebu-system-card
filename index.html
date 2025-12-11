@@ -540,14 +540,27 @@
       text,
       x + 3,           // padding
       bodyTop,
-      w - 4,           // padding canged from 6 to 4
+      w - 6,           // padding 
       bodyHeight,
       10,              // 🔥 MAX FONT SIZE increased from 8 → 10
       8,             // 🔥 MIN FONT SIZE increased from 5.5 → 8
       "left",
       false
     );
-  }
+  }else {
+    drawFittedText(
+      doc,
+      text,
+      x + 3,           // padding
+      bodyTop,
+      w - 3,           // padding 
+      bodyHeight,
+      10,              // 🔥 MAX FONT SIZE increased from 8 → 10
+      8,             // 🔥 MIN FONT SIZE increased from 5.5 → 8
+      "left",
+      false
+    );
+  } 
 }
 
     // ---------- PAGE DRAWING ----------
