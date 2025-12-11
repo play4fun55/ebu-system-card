@@ -562,6 +562,43 @@
     );
   } 
 }
+function drawActionRow(doc, x, y, labelW, bodyW, h, labelText, bodyText) {
+  // Draw the two cells
+  doc.setLineWidth(0.4);
+  doc.rect(x, y, labelW, h);
+  doc.rect(x + labelW, y, bodyW, h);
+
+  // --- LABEL CELL ---
+  setFontBold(doc, 8.2);
+  const labelLines = doc.splitTextToSize(labelText || "", labelW - 6);
+  const labelLH = 8.2 * 1.2;
+  let curY = y + 5 + 8.2;          // a bit higher in the cell
+
+  labelLines.forEach(line => {
+    doc.text(line, x + 3, curY);
+    curY += labelLH;
+  });
+
+  // --- BODY CELL ---
+  // Use almost the full height, with bigger default font
+  const bodyTop = y + 4;           // move text higher
+  const bodyHeight = h - 8;
+
+  if (bodyText && bodyHeight > 0) {
+    drawFittedText(
+      doc,
+      bodyText,
+      x + labelW + 3,              // left padding inside body cell
+      bodyTop,
+      bodyW - 6,                   // width inside body cell
+      bodyHeight,
+      9.5,                         // MAX font size (bigger)
+      7.0,                         // MIN font size
+      "left",
+      false
+    );
+  }
+}
 
     // ---------- PAGE DRAWING ----------
 
