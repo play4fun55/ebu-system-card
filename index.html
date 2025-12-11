@@ -508,19 +508,19 @@
       drawCenteredText(doc, text, x + w / 2, y + h / 2 + 3, size, true);
     }
 
-    function drawLabelCell(doc, x, y, w, h, label, text) {
+   function drawLabelCell(doc, x, y, w, h, label, text) {
   doc.setLineWidth(0.4);
   doc.rect(x, y, w, h);
 
-  // Reserve a fixed top area for the label (about 12pt tall)
-  const labelHeight = 12;
+  // Reserve a fixed top area for the label (slightly larger)
+  const labelHeight = 14;
 
   // --- LABEL TEXT ---
-  setFontBold(doc, 7.5);
-  const labelLines = doc.splitTextToSize(label || "", w - 6); 
-  const lh = 7.5 * 1.2;
+  setFontBold(doc, 8.2);
+  const labelLines = doc.splitTextToSize(label || "", w - 6);
+  const lh = 8.2 * 1.2;
 
-  let curY = y + 3 + 7.5;     // starting y for label text
+  let curY = y + 5 + 8.2;             // higher placement
   const maxLabelY = y + labelHeight;
 
   labelLines.forEach(line => {
@@ -531,19 +531,19 @@
   });
 
   // --- BODY TEXT ---
-  const bodyTop = y + labelHeight + 2;  
-  const bodyHeight = h - labelHeight - 4;
+  const bodyTop = y + labelHeight - 1;   // move text UP
+  const bodyHeight = h - labelHeight - 2;
 
   if (text && bodyHeight > 0) {
     drawFittedText(
       doc,
       text,
-      x,            // left
-      bodyTop,      // top of body
-      w,            // width
-      bodyHeight,   // height
-      8,            // max font
-      5.5,          // min font
+      x + 3,           // padding
+      bodyTop,
+      w - 6,           // padding
+      bodyHeight,
+      10,              // 🔥 MAX FONT SIZE increased from 8 → 10
+      6.5,             // 🔥 MIN FONT SIZE increased from 5.5 → 6.5
       "left",
       false
     );
