@@ -540,28 +540,16 @@
       text,
       x + 3,           // padding
       bodyTop,
-      w - 6,           // padding 
+      w - 6,           // padding
       bodyHeight,
       10,              // 🔥 MAX FONT SIZE increased from 8 → 10
-      8,             // 🔥 MIN FONT SIZE increased from 5.5 → 8
+      6.5,             // 🔥 MIN FONT SIZE increased from 5.5 → 6.5
       "left",
       false
     );
-  }else {
-    drawFittedText(
-      doc,
-      text,
-      x + 3,           // padding
-      bodyTop,
-      w - 3,           // padding 
-      bodyHeight,
-      10,              // 🔥 MAX FONT SIZE increased from 8 → 10
-      8,             // 🔥 MIN FONT SIZE increased from 5.5 → 8
-      "left",
-      false
-    );
-  } 
+  }
 }
+
 function drawActionRow(doc, x, y, labelW, bodyW, h, labelText, bodyText) {
   // Draw the two cells
   doc.setLineWidth(0.4);
