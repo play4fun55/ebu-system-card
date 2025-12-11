@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EBU System Card – Page 1 Builder V0.6.0 (DEBUG PDF)</title>
+  <title>EBU System Card – Page 1 Builder V0.7.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -126,7 +126,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>EBU System Card – Page 1 Builder V0.6.0 (DEBUG PDF)</h1>
+    <h1>EBU System Card – Page 1 Builder V0.7.0</h1>
 
     <!-- HEADER -->
     <h2>Header</h2>
@@ -219,7 +219,7 @@
     <!-- TWO-LEVEL OPENINGS -->
     <h2>Two-level openings and responses</h2>
 
-    <div class="field small">“Notes” column on final layout shows a note number; the actual text appears on page 4.</div>
+    <div class="field small">“Notes” column on page 1 shows a note number; the actual text appears on page 4.</div>
 
     <h3>2♣</h3>
     <div class="grid-3">
@@ -312,7 +312,7 @@
       <span id="status" class="status"></span>
       <button id="clearBtn" type="button" class="danger">Clear</button>
       <button id="saveBtn" type="button" class="secondary" disabled>Save and continue</button>
-      <button id="publishBtn" type="button" disabled>Publish DEBUG PDF (all inputs)</button>
+      <button id="publishBtn" type="button" disabled>Publish PDF (4-page card layout)</button>
     </div>
   </div>
 
@@ -337,7 +337,7 @@
     const publishBtn = $("publishBtn");
     const clearBtn = $("clearBtn");
 
-    const COOKIE_NAME = "ebuSystemCardPage1_debug";
+    const COOKIE_NAME = "ebuSystemCardPage1_full";
 
     // ---- cookie helpers ----
     function setCookie(name, value, days) {
@@ -397,7 +397,7 @@
       publishBtn.disabled = !ok;
     }
 
-    // attach change handlers
+    // attach listeners
     fields.forEach(f => {
       const el = $(f);
       if (!el) return;
@@ -427,7 +427,7 @@
     saveBtn.addEventListener("click", () => {
       const data = getData();
       setCookie(COOKIE_NAME, JSON.stringify(data), 365);
-      statusEl.textContent = "Saved in cookie (debug mode).";
+      statusEl.textContent = "Saved in cookie.";
       setTimeout(() => statusEl.textContent = "", 4000);
     });
 
@@ -445,84 +445,387 @@
 
     // publish
     publishBtn.addEventListener("click", async () => {
-      await generateDebugPdf(getData());
+      await generatePdf(getData());
     });
 
-    // ------------- DEBUG PDF: ALL FIELDS AS TEXT -------------
-    async function generateDebugPdf(data) {
+    // ---------- PDF LAYOUT HELPERS ----------
+    function setFontRegular(doc, size) {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(size);
+    }
+    function setFontBold(doc, size) {
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(size);
+    }
+
+    function drawFittedText(doc, text, x, y, w, h, baseSize, minSize, align = "left", bold = false) {
+      const padding = 3;
+      let size = baseSize;
+      let lines = [text || ""];
+      let lineHeight = size * 1.15;
+      const maxWidth = w - 2 * padding;
+      const maxHeight = h - 2 * padding;
+
+      if (!text) return;
+
+      while (size >= minSize) {
+        if (bold) setFontBold(doc, size); else setFontRegular(doc, size);
+        lineHeight = size * 1.15;
+        lines = doc.splitTextToSize(text, maxWidth);
+        const neededH = lines.length * lineHeight;
+        if (neededH <= maxHeight) break;
+        size -= 0.3;
+      }
+
+      if (bold) setFontBold(doc, size); else setFontRegular(doc, size);
+      let curY = y + padding + size;
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (align === "center") {
+          const centerX = x + w / 2;
+          doc.text(line, centerX, curY, { align: "center" });
+        } else {
+          doc.text(line, x + padding, curY);
+        }
+        curY += lineHeight;
+        if (curY > y + h) break;
+      }
+    }
+
+    function drawFrame(doc, x, y, w, h) {
+      doc.setLineWidth(1.0);
+      doc.rect(x, y, w, h);
+    }
+
+    function drawCenteredText(doc, text, x, y, size, bold = false) {
+      if (bold) setFontBold(doc, size); else setFontRegular(doc, size);
+      doc.text(text, x, y, { align: "center" });
+    }
+
+    function drawHeaderRow(doc, x, y, w, h, text, size = 9) {
+      doc.setLineWidth(0.6);
+      doc.rect(x, y, w, h);
+      drawCenteredText(doc, text, x + w / 2, y + h / 2 + 3, size, true);
+    }
+
+    function drawLabelCell(doc, x, y, w, h, label, text) {
+      doc.setLineWidth(0.4);
+      doc.rect(x, y, w, h);
+
+      setFontBold(doc, 7.5);
+      const labelLines = doc.splitTextToSize(label || "", w - 6);
+      const labelLineHeight = 7.5 * 1.2;
+      let curY = y + 3 + 7.5;
+      labelLines.forEach(ln => {
+        doc.text(ln, x + 3, curY);
+        curY += labelLineHeight;
+      });
+
+      const bodyTop = curY + 2;
+      const bodyH = y + h - 3 - bodyTop;
+      if (bodyH > 4 && text) {
+        drawFittedText(doc, text, x, bodyTop, w, bodyH, 8, 5.5, "left", false);
+      }
+    }
+
+    // ---------- PAGE DRAWING ----------
+
+    async function generatePdf(data) {
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+      const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
 
       const pageW = doc.internal.pageSize.getWidth();
       const pageH = doc.internal.pageSize.getHeight();
-      const margin = 40;
-      let x = margin;
-      let y = margin;
+      const margin = 24;
+      const gap = 12;
+      const panelW = (pageW - 2 * margin - gap) / 2;
+      const panelH = pageH - 2 * margin;
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text("EBU System Card – DEBUG OUTPUT (all fields)", pageW / 2, y, { align: "center" });
-      y += 24;
+      // Sheet 1: Page 4 (left) + Page 1 (right)
+      drawPage4(doc, margin, margin, panelW, panelH, data);
+      drawPage1(doc, margin + panelW + gap, margin, panelW, panelH, data);
 
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
+      // Sheet 2: Page 2 (left) + Page 3 (right)
+      doc.addPage();
+      drawPage2(doc, margin, margin, panelW, panelH);
+      drawPage3(doc, margin + panelW + gap, margin, panelW, panelH);
 
-      const labels = {
-        playerName: "Your name",
-        playerNumber: "Your EBU number",
-        partnerName: "Partner's name",
-        partnerNumber: "Partner's EBU number",
-        biddingDescription: "General description of bidding methods",
-        ntStrength: "1NT strength",
-        ntStrengthArtificial: "If artificial – details",
-        ntShape: "Shape constraints",
-        ntShapeArtificial: "If may have singleton – details",
-        nt2c: "2♣ meaning",
-        nt2d: "2♦ meaning",
-        nt2h: "2♥ meaning",
-        nt2s: "2♠ meaning",
-        nt2nt: "2NT meaning",
-        ntOthers: "Other 1NT responses",
-        afterDouble: "Action after opponents double",
-        afterInterference: "Action after other interference",
-        twoCMeaning: "2♣ – meaning",
-        twoCResponses: "2♣ – responses",
-        twoCNotes: "2♣ – notes",
-        twoDMeaning: "2♦ – meaning",
-        twoDResponses: "2♦ – responses",
-        twoDNotes: "2♦ – notes",
-        twoHMeaning: "2♥ – meaning",
-        twoHResponses: "2♥ – responses",
-        twoHNotes: "2♥ – notes",
-        twoSMeaning: "2♠ – meaning",
-        twoSResponses: "2♠ – responses",
-        twoSNotes: "2♠ – notes",
-        twoNTMeaning: "2NT – meaning",
-        twoNTResponses: "2NT – responses",
-        twoNTNotes: "2NT – notes",
-        otherAspects: "Other aspects of system"
-      };
+      doc.save("ebu-system-card.pdf");
+    }
 
-      const maxWidth = pageW - 2 * margin;
-      const lineHeight = 14;
+    function drawPage1(doc, x, y, w, h, d) {
+      drawFrame(doc, x, y, w, h);
 
-      for (const key of fields) {
-        const label = labels[key] || key;
-        const value = (data[key] || "").replace(/\r\n/g, "\n");
+      const innerPad = 6;
+      let cursorY = y + innerPad;
 
-        const combined = label + ": " + value;
-        const lines = doc.splitTextToSize(combined, maxWidth);
+      // Header names
+      const topH = 40;
+      doc.setLineWidth(0.6);
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, topH);
+      const leftX = x + innerPad + 6;
+      const rightX = x + w - innerPad - 6;
 
-        if (y + lines.length * lineHeight > pageH - margin) {
-          doc.addPage();
-          y = margin;
-        }
+      setFontBold(doc, 9.5);
+      doc.text("Name", leftX, cursorY + 14);
+      doc.text("Partner", leftX, cursorY + 30);
 
-        doc.text(lines, x, y);
-        y += lines.length * lineHeight;
+      setFontRegular(doc, 9);
+      doc.text(d.playerName || "", leftX + 45, cursorY + 14);
+      doc.text(d.partnerName || "", leftX + 45, cursorY + 30);
+
+      setFontBold(doc, 9);
+      doc.text("EBU No. " + (d.playerNumber || ""), rightX, cursorY + 14, { align: "right" });
+      doc.text("EBU No. " + (d.partnerNumber || ""), rightX, cursorY + 30, { align: "right" });
+
+      cursorY += topH + 4;
+
+      // General description
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
+        "GENERAL DESCRIPTION OF BIDDING METHODS", 9);
+      cursorY += 16;
+
+      const descH = 18;
+      doc.setLineWidth(0.6);
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, descH);
+      drawFittedText(doc, d.biddingDescription || "",
+        x + innerPad, cursorY, w - 2 * innerPad, descH, 8.5, 6, "center", true);
+      cursorY += descH + 3;
+
+      // 1NT header
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
+        "1NT OPENINGS AND RESPONSES", 9);
+      cursorY += 16 + 1;
+
+      // Strength & shape (2 columns)
+      const rowH = 28;
+      const twoColW = (w - 2 * innerPad) / 2;
+
+      drawLabelCell(doc, x + innerPad, cursorY, twoColW, rowH,
+        "Strength", d.ntStrength || "");
+      drawLabelCell(doc, x + innerPad + twoColW, cursorY, twoColW, rowH,
+        "If artificial – details", d.ntStrengthArtificial || "");
+      cursorY += rowH;
+
+      drawLabelCell(doc, x + innerPad, cursorY, twoColW, rowH,
+        "Shape constraints", d.ntShape || "");
+      drawLabelCell(doc, x + innerPad + twoColW, cursorY, twoColW, rowH,
+        "If may have singleton – details", d.ntShapeArtificial || "");
+      cursorY += rowH + 3;
+
+      // Responses heading
+      const respHeadH = 12;
+      doc.setLineWidth(0.4);
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, respHeadH);
+      setFontBold(doc, 8);
+      doc.text("Responses", x + innerPad + 3, cursorY + 9);
+      cursorY += respHeadH;
+
+      // Responses rows
+      const respRowH = 20;
+      const halfW = (w - 2 * innerPad) / 2;
+
+      function respRow(label1, text1, label2, text2) {
+        doc.setLineWidth(0.4);
+        doc.rect(x + innerPad, cursorY, halfW, respRowH);
+        doc.rect(x + innerPad + halfW, cursorY, halfW, respRowH);
+
+        const leftText = (label1 ? (label1 + ": ") : "") + (text1 || "");
+        const rightText = (label2 ? (label2 + ": ") : "") + (text2 || "");
+
+        drawFittedText(doc, leftText, x + innerPad, cursorY, halfW, respRowH, 8, 6, "left", false);
+        drawFittedText(doc, rightText, x + innerPad + halfW, cursorY, halfW, respRowH, 8, 6, "left", false);
+
+        cursorY += respRowH;
       }
 
-      doc.save("ebu-system-card-debug.pdf");
+      respRow("2C", d.nt2c, "2D", d.nt2d);
+      respRow("2H", d.nt2h, "2S", d.nt2s);
+      respRow("2NT", d.nt2nt, "Others", d.ntOthers);
+
+      // Action rows
+      const actH = 24;
+      drawLabelCell(doc, x + innerPad, cursorY, 90, actH,
+        "Action after opponents double", "");
+      drawLabelCell(doc, x + innerPad + 90, cursorY,
+        (w - 2 * innerPad) - 90, actH,
+        "", d.afterDouble || "");
+      cursorY += actH;
+
+      drawLabelCell(doc, x + innerPad, cursorY, 90, actH,
+        "Action after other interference", "");
+      drawLabelCell(doc, x + innerPad + 90, cursorY,
+        (w - 2 * innerPad) - 90, actH,
+        "", d.afterInterference || "");
+      cursorY += actH + 4;
+
+      // Two-level openings
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
+        "TWO-LEVEL OPENINGS AND RESPONSES", 9);
+      cursorY += 16;
+
+      const headerH = 14;
+      const col1 = 32;
+      const col2 = 165;
+      const col3 = 165;
+      const col4 = (w - 2 * innerPad) - (col1 + col2 + col3);
+
+      doc.setLineWidth(0.4);
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, headerH);
+      setFontBold(doc, 8);
+      doc.text("Meaning", x + innerPad + col1 + 4, cursorY + 10);
+      doc.text("Responses", x + innerPad + col1 + col2 + 4, cursorY + 10);
+      doc.text("Notes", x + innerPad + col1 + col2 + col3 + 4, cursorY + 10);
+      cursorY += headerH;
+
+      function openingRow(label, m, r, noteText, noteIndex) {
+        const rowH = 24;
+        doc.rect(x + innerPad, cursorY, col1, rowH);
+        doc.rect(x + innerPad + col1, cursorY, col2, rowH);
+        doc.rect(x + innerPad + col1 + col2, cursorY, col3, rowH);
+        doc.rect(x + innerPad + col1 + col2 + col3, cursorY, col4, rowH);
+
+        setFontBold(doc, 9);
+        doc.text(label, x + innerPad + 4, cursorY + 14);
+
+        drawFittedText(doc, m || "", x + innerPad + col1, cursorY, col2, rowH, 7, 5.5, "left", false);
+        drawFittedText(doc, r || "", x + innerPad + col1 + col2, cursorY, col3, rowH, 7, 5.5, "left", false);
+
+        const noteLabel = (noteText && noteText.length > 0) ? String(noteIndex) : "";
+        if (noteLabel) {
+          drawFittedText(doc, noteLabel, x + innerPad + col1 + col2 + col3, cursorY, col4, rowH, 8, 6, "left", true);
+        }
+
+        cursorY += rowH;
+      }
+
+      openingRow("2C", d.twoCMeaning, d.twoCResponses, d.twoCNotes, 1);
+      openingRow("2D", d.twoDMeaning, d.twoDResponses, d.twoDNotes, 2);
+      openingRow("2H", d.twoHMeaning, d.twoHResponses, d.twoHNotes, 3);
+      openingRow("2S", d.twoSMeaning, d.twoSResponses, d.twoSNotes, 4);
+      openingRow("2NT", d.twoNTMeaning, d.twoNTResponses, d.twoNTNotes, 5);
+
+      cursorY += 3;
+
+      // Other aspects
+      drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 18,
+        "OTHER ASPECTS OF SYSTEM WHICH OPPONENTS SHOULD NOTE", 9);
+      cursorY += 18;
+
+      const restH = y + h - cursorY - innerPad;
+      doc.setLineWidth(0.4);
+      doc.rect(x + innerPad, cursorY, w - 2 * innerPad, restH);
+
+      drawFittedText(doc, d.otherAspects || "",
+        x + innerPad, cursorY, w - 2 * innerPad, restH, 7.5, 5.5, "left", false);
+    }
+
+    function drawPage2(doc, x, y, w, h) {
+      drawFrame(doc, x, y, w, h);
+      drawCenteredText(doc, "PAGE 2 – to be defined", x + w / 2, y + h / 2, 12, true);
+    }
+
+    function drawPage3(doc, x, y, w, h) {
+      drawFrame(doc, x, y, w, h);
+      drawCenteredText(doc, "PAGE 3 – to be defined", x + w / 2, y + h / 2, 12, true);
+    }
+
+    function drawPage4(doc, x, y, w, h, d) {
+      drawFrame(doc, x, y, w, h);
+      const innerPad = 8;
+      const headerH = 24;
+
+      const notesData = [
+        { n: 1, text: d.twoCNotes },
+        { n: 2, text: d.twoDNotes },
+        { n: 3, text: d.twoHNotes },
+        { n: 4, text: d.twoSNotes },
+        { n: 5, text: d.twoNTNotes }
+      ];
+
+      const maxWidth = w - 2 * innerPad - 6;
+      const lineHeight = 9;
+      const gap = 4;
+
+      const rendered = [];
+      notesData.forEach(note => {
+        if (!note.text || note.text.trim().length === 0) return;
+        const prefix = note.n + ". ";
+        const lines = doc.splitTextToSize(prefix + note.text, maxWidth);
+        rendered.push({ lines });
+      });
+
+      if (rendered.length === 0) {
+        const headerTop = y + h * 0.75;
+        const headerX = x + innerPad;
+        drawHeaderRow(doc, headerX, headerTop,
+          w - 2 * innerPad, headerH,
+          "SYSTEM NOTES (from page 1)", 10);
+        setFontRegular(doc, 8);
+        doc.text("No notes defined yet.",
+          headerX + 3,
+          headerTop + headerH + 14);
+        return;
+      }
+
+      let totalHeight = 0;
+      rendered.forEach(r => {
+        totalHeight += r.lines.length * lineHeight + gap;
+      });
+
+      let headerTop = y + h * 0.75;
+      const minHeaderTop = y + innerPad;
+      const maxHeaderTop = y + h - innerPad - headerH - 40;
+      if (headerTop < minHeaderTop) headerTop = minHeaderTop;
+      if (headerTop > maxHeaderTop) headerTop = maxHeaderTop;
+
+      const headerX = x + innerPad;
+      drawHeaderRow(doc, headerX, headerTop,
+        w - 2 * innerPad, headerH,
+        "SYSTEM NOTES (from page 1)", 10);
+
+      const notesStartY = headerTop + headerH + 6;
+      const availableH = y + h - innerPad - notesStartY;
+
+      if (totalHeight <= availableH) {
+        setFontRegular(doc, 7.5);
+        let cursorY = notesStartY + 7.5;
+        rendered.forEach(r => {
+          doc.text(r.lines, headerX + 3, cursorY);
+          cursorY += r.lines.length * lineHeight + gap;
+        });
+      } else {
+        setFontRegular(doc, 7.5);
+        doc.text(
+          "System notes are printed on a separate sheet.",
+          headerX + 3,
+          notesStartY + 10
+        );
+
+        // extra portrait page with notes
+        doc.addPage("a4", "portrait");
+        const pw = doc.internal.pageSize.getWidth();
+        const ph = doc.internal.pageSize.getHeight();
+        const pm = 40;
+        const contentW = pw - 2 * pm;
+
+        drawHeaderRow(doc, pm, pm, contentW, 30, "SYSTEM NOTES (from page 1)", 12);
+
+        setFontRegular(doc, 10);
+        let cursorY = pm + 30 + 16;
+        const portraitLineHeight = 12;
+        rendered.forEach(r => {
+          r.lines.forEach(line => {
+            if (cursorY > ph - pm) {
+              doc.addPage("a4", "portrait");
+              cursorY = pm;
+            }
+            doc.text(line, pm + 4, cursorY);
+            cursorY += portraitLineHeight;
+          });
+          cursorY += 6;
+        });
+      }
     }
   </script>
 </body>
