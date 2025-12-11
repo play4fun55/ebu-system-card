@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EBU System Card – Page 1 Builder V0.4.2</title>
+  <title>EBU System Card – Page 1 Builder V0.5.0</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -126,7 +126,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>EBU System Card – Page 1 Builder V0.4.2</h1>
+    <h1>EBU System Card – Page 1 Builder V0.5.0</h1>
 
     <!-- HEADER -->
     <h2>Header</h2>
@@ -337,18 +337,9 @@
     const publishBtn = $("publishBtn");
     const clearBtn = $("clearBtn");
 
-    // ---------- DEFAULT DATA (used when field left empty) ----------
-    const defaultData = {
-      ntStrength: "15–17",
-      ntShape: "No singleton or void. No 6-card major or 7-card minor",
-      ntShapeArtificial: "May contain singleton Ace or King",
-      afterDouble: "Redouble = to play; all two-level bids are transfers (escape system)",
-      afterInterference: "Lebensohl; double shows values. Transfer over 2C/2D natural; penalties over 2H/2S"
-    };
-
-    // ---------- COOKIE HELPERS ----------
     const COOKIE_NAME = "ebuSystemCardPage1";
 
+    // ---- Simple cookie helpers ----
     function setCookie(name, value, days) {
       let expires = "";
       if (days) {
@@ -375,44 +366,12 @@
       document.cookie = name + "=; Max-Age=-1; path=/";
     }
 
-    // ---------- SIMPLE TEXT NORMALISATION ----------
-    function cleanText(str) {
-      if (!str) return "";
-      let s = String(str);
-
-      // legacy shorthand from EBU card copier -> plain letters
-      s = s
-        .replace(/&`;/gi, "S").replace(/&`/gi, "S")
-        .replace(/&c;/gi, "C").replace(/&c/gi, "C")
-        .replace(/&e;/gi, "D").replace(/&e/gi, "D")
-        .replace(/&f;/gi, "H").replace(/&f/gi, "H");
-
-      s = s.replace(/&#9824;|&spades;?/gi, "S");
-      s = s.replace(/&#9827;|&clubs;?/gi,  "C");
-      s = s.replace(/&#9830;|&diams;?|&diamonds;?/gi, "D");
-      s = s.replace(/&#9829;|&hearts;?/gi, "H");
-
-      return s;
-    }
-
-    function normaliseAllFields() {
-      fields.forEach(id => {
-        const el = $(id);
-        if (el && typeof el.value === "string") {
-          el.value = cleanText(el.value);
-        }
-      });
-    }
-
+    // ---- Data helpers: DIRECT mapping, no cleaning, no defaults ----
     function getData() {
       const data = {};
       fields.forEach(f => {
-        let v = cleanText($(f).value.trim());
-        // if empty but we have a default, use default
-        if (!v && Object.prototype.hasOwnProperty.call(defaultData, f)) {
-          v = defaultData[f];
-        }
-        data[f] = v;
+        const el = $(f);
+        data[f] = el ? el.value : "";
       });
       return data;
     }
@@ -420,35 +379,35 @@
     function setData(data) {
       fields.forEach(f => {
         if (data[f] !== undefined && data[f] !== null) {
-          $(f).value = data[f];
+          const el = $(f);
+          if (el) el.value = data[f];
         }
       });
-      normaliseAllFields();
       validateRequired();
     }
 
     function validateRequired() {
       const d = getData();
-      const ok = d.playerName && d.playerNumber &&
-                 d.partnerName && d.partnerNumber &&
-                 d.biddingDescription;
+      const ok = d.playerName.trim() &&
+                 d.playerNumber.trim() &&
+                 d.partnerName.trim() &&
+                 d.partnerNumber.trim() &&
+                 d.biddingDescription.trim();
       saveBtn.disabled = !ok;
       publishBtn.disabled = !ok;
     }
 
-    // Attach input / blur handlers
+    // Attach listeners
     fields.forEach(f => {
       const el = $(f);
+      if (!el) return;
       el.addEventListener("input", () => {
         validateRequired();
         statusEl.textContent = "";
       });
-      el.addEventListener("blur", () => {
-        el.value = cleanText(el.value);
-      });
     });
 
-    // Restore from cookie on load
+    // Restore from cookie
     (function restoreFromCookie() {
       try {
         const raw = getCookie(COOKIE_NAME);
@@ -464,18 +423,19 @@
       validateRequired();
     })();
 
-    // Save button
+    // Save
     saveBtn.addEventListener("click", () => {
       const data = getData();
-      setCookie(COOKIE_NAME, JSON.stringify(data), 365); // 1 year
+      setCookie(COOKIE_NAME, JSON.stringify(data), 365);
       statusEl.textContent = "Saved in cookie. (Next step: page 2 builder.)";
       setTimeout(() => statusEl.textContent = "", 4000);
     });
 
-    // Clear button
+    // Clear
     clearBtn.addEventListener("click", () => {
       fields.forEach(f => {
-        $(f).value = "";
+        const el = $(f);
+        if (el) el.value = "";
       });
       eraseCookie(COOKIE_NAME);
       validateRequired();
@@ -483,12 +443,12 @@
       setTimeout(() => statusEl.textContent = "", 4000);
     });
 
-    // Publish PDF
+    // Publish
     publishBtn.addEventListener("click", async () => {
       await generatePdf(getData());
     });
 
-    // ---------- PDF GENERATION (helvetica only, with dynamic text) ----------
+    // ---------- PDF generation (same layout as before) ----------
     function setFontRegular(doc, size) {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(size);
@@ -498,7 +458,6 @@
       doc.setFontSize(size);
     }
 
-    // Auto-fit paragraph inside a box
     function drawFittedText(doc, text, x, y, w, h, baseSize, minSize, align = "left", bold = false) {
       const padding = 3;
       let size = baseSize;
@@ -549,17 +508,15 @@
       drawCenteredText(doc, text, x + w / 2, y + h / 2 + 3, size, true);
     }
 
-    // Label + dynamic body
     function drawLabelCell(doc, x, y, w, h, label, text) {
       doc.setLineWidth(0.4);
       doc.rect(x, y, w, h);
 
-      // label at top
       setFontBold(doc, 7.5);
       const labelLines = doc.splitTextToSize(label || "", w - 6);
       const labelLineHeight = 7.5 * 1.2;
       let curY = y + 3 + 7.5;
-      labelLines.forEach((ln, idx) => {
+      labelLines.forEach(ln => {
         doc.text(ln, x + 3, curY);
         curY += labelLineHeight;
       });
@@ -582,11 +539,11 @@
       const panelW = (pageW - 2 * margin - gap) / 2;
       const panelH = pageH - 2 * margin;
 
-      // SHEET 1: Page 4 (left) + Page 1 (right)
+      // Sheet 1: Page 4 (left) + Page 1 (right)
       drawPage4(doc, margin, margin, panelW, panelH, data);
       drawPage1(doc, margin + panelW + gap, margin, panelW, panelH, data);
 
-      // SHEET 2: Page 2 (left) + Page 3 (right)
+      // Sheet 2: Page 2 (left) + Page 3 (right)
       doc.addPage();
       drawPage2(doc, margin, margin, panelW, panelH);
       drawPage3(doc, margin + panelW + gap, margin, panelW, panelH);
@@ -600,7 +557,7 @@
       const innerPad = 6;
       let cursorY = y + innerPad;
 
-      // Top name area
+      // Header names
       const topH = 40;
       doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, topH);
@@ -621,12 +578,11 @@
 
       cursorY += topH + 4;
 
-      // General description header
+      // General description
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
         "GENERAL DESCRIPTION OF BIDDING METHODS", 9);
       cursorY += 16;
 
-      // Description line
       const descH = 18;
       doc.setLineWidth(0.6);
       doc.rect(x + innerPad, cursorY, w - 2 * innerPad, descH);
@@ -639,7 +595,7 @@
         "1NT OPENINGS AND RESPONSES", 9);
       cursorY += 16 + 1;
 
-      // Strength & shape rows
+      // Strength & shape (2 columns)
       const rowH = 28;
       const twoColW = (w - 2 * innerPad) / 2;
 
@@ -685,7 +641,7 @@
       respRow("2H", d.nt2h, "2S", d.nt2s);
       respRow("2NT", d.nt2nt, "Others", d.ntOthers);
 
-      // Actions
+      // Action rows
       const actH = 24;
       drawLabelCell(doc, x + innerPad, cursorY, 90, actH,
         "Action after opponents double", "");
@@ -701,12 +657,11 @@
         "", d.afterInterference || "");
       cursorY += actH + 4;
 
-      // Two-level openings header
+      // Two-level openings
       drawHeaderRow(doc, x + innerPad, cursorY, w - 2 * innerPad, 16,
         "TWO-LEVEL OPENINGS AND RESPONSES", 9);
       cursorY += 16;
 
-      // Table header
       const headerH = 14;
       const col1 = 32;
       const col2 = 165;
